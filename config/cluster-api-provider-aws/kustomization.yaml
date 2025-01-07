@@ -5,6 +5,9 @@ kind: Kustomization
 resources:
 - default/
 
+transformers:
+- base/transformer.yaml
+
 ## Patch the default CAPA CRDs & CRs with OCP dwonstream CAPA requirements. 
 patches:
   # Removing the caBundle field (TODO: remove this patch in next release as caBundle is removed upstream)
@@ -109,14 +112,6 @@ patches:
       - op: replace
         path: /spec/template/spec/affinity/nodeAffinity/preferredDuringSchedulingIgnoredDuringExecution/0/preference/matchExpressions/0/key
         value: 'node-role.kubernetes.io/control-plane'
-      - op: replace
-        path: /spec/template/spec/containers/0/args
-        value:
-        - --leader-elect
-        - --feature-gates=ROSA=true,EKS=true,EKSEnableIAM=true,EKSAllowAddRoles=true,EKSFargate=true,TagUnmanagedNetworkResources=true,AutoControllerIdentityCreator=true,MachinePool=true,EventBridgeInstanceState=false,BootstrapFormatIgnition=false,ExternalResourceGC=false,AlternativeGCStrategy=false
-        - --v=0
-        - --diagnostics-address=:8443
-        - --insecure-diagnostics=false
       - op: replace
         path: /spec/template/spec/containers/0/image
         value: '{{ .Values.manager.image.url  }}:{{ .Values.manager.image.tag  }}'
