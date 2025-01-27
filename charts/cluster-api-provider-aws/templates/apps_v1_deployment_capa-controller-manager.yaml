@@ -75,6 +75,8 @@ spec:
           capabilities:
             drop:
             - ALL
+          runAsGroup: 65532
+          runAsUser: 65532
         terminationMessagePolicy: FallbackToLogsOnError
         volumeMounts:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
@@ -83,6 +85,7 @@ spec:
         - mountPath: /home/.aws
           name: credentials
       securityContext:
+        fsGroup: 1000
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
