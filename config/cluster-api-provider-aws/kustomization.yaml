@@ -117,12 +117,6 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent
-      - op: remove
-        path: /spec/template/spec/containers/0/securityContext/runAsUser
-      - op: remove
-        path: /spec/template/spec/containers/0/securityContext/runAsGroup
-      - op: remove
-        path: /spec/template/spec/securityContext/fsGroup
   # Add OCP cert service annotation
   - target:
       kind: Service

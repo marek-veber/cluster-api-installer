@@ -4,7 +4,7 @@ aws:
 rosa:
   ocmToken: ""
 manager:
-  cmd: /bin/cluster-api-provider-aws-controller-manager
+  cmd: /manager
   image:
-    tag: v4.18
-    url: registry.redhat.io/openshift4/ose-aws-cluster-api-controllers-rhel9
+    tag: nightly_main_20250122
+    url: gcr.io/k8s-staging-cluster-api-aws/cluster-api-aws-controller

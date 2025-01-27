@@ -1,7 +1,9 @@
 OCP_VERSION ?= 4.18
-BRANCH ?= release-4.18
+BRANCH ?= main
 SYNC2CHARTS ?= true
-ORGREPO ?= https://github.com/openshift
+ORGREPO ?= https://github.com/kubernetes-sigs
+
+# /cluster-api-provider-aws/blob/main/config/crd/bases/controlplane.cluster.x-k8s.io_rosacontrolplanes.yaml
 
 build-cluster-api-chart: PROJECT = cluster-api
 build-cluster-api-aws-chart: PROJECT = cluster-api-provider-aws
