@@ -10,15 +10,6 @@ transformers:
 
 ## Patch the default CAPI CRDs & CRs with OCP dwonstream CAPI requirements. 
 patches:
-  # Remove cert-manager annotation and add OCP cert service annotation
-  - target:
-      annotationSelector: cert-manager.io/inject-ca-from
-    patch: |-
-      - op: add
-        path: /metadata/annotations/service.beta.openshift.io~1inject-cabundle
-        value: true
-      - op: remove
-        path: /metadata/annotations/cert-manager.io~1inject-ca-from
   # Replace Deployment with default values & helm chart value
   - target:
       kind: Deployment
@@ -34,15 +25,3 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/imagePullPolicy
         value: IfNotPresent
-      - op: remove
-        path: /spec/template/spec/containers/0/securityContext/runAsUser
-      - op: remove
-        path: /spec/template/spec/containers/0/securityContext/runAsGroup
-  # Add OCP cert service annotation
-  - target:
-      kind: Service
-      name: capi-webhook-service
-    patch: |-
-      - op: add
-        path: /metadata/annotations/service.beta.openshift.io~1serving-cert-secret-name
-        value: capi-webhook-service-cert

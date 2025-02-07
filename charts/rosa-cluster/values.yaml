@@ -1,0 +1,14 @@
+clusterName: ""
+accountRolesPrefix: ""
+operatorRolesPrefix: ""
+awsRegion: ""
+awsAvailabilityZone: ""
+openshiftVersion: ""
+awsAccountId: ""
+vpcId: ""
+publicSubnetId: ""
+privateSubnetId: ""
+oidcConfigId: ""
+identityRef:
+  kind: AWSClusterControllerIdentity
+  name: default
