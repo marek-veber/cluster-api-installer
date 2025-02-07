@@ -1,0 +1,8 @@
+manager:
+  cmd: /manager
+  image:
+    url: quay.io/mveber/cluster-api/cluster-api-controller-amd64
+    tag: dev
+#    url: quay.io/mveber/ose-cluster-kube-cluster-api-rhel9-operator
+#    tag: v4.18-ns-separation
+

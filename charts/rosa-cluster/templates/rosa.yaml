@@ -1,0 +1,68 @@
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: "{{ .Values.clusterName }}"
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+    kind: ROSACluster
+    name: "{{ .Values.clusterName }}"
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+    kind: ROSAControlPlane
+    name: "{{ .Values.clusterName }}-control-plane"
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: ROSACluster
+metadata:
+  name: "{{ .Values.clusterName }}"
+spec: {}
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+kind: ROSAControlPlane
+metadata:
+  name: "{{ .Values.clusterName }}-control-plane"
+spec:
+  rosaClusterName: {{ .Values.clusterName }}
+  version: "{{ .Values.openshiftVersion }}"
+  region: "{{ .Values.awsRegion }}"
+  identityRef:
+    {{- range $key, $val := .Values.identityRef }}
+    {{ $key }}: {{ $val }}
+    {{- end }}
+  credentialsSecretRef:
+    name: rosa-creds-secret
+  network:
+    machineCIDR: "10.0.0.0/16"
+  rolesRef:
+    ingressARN: "arn:aws:iam::{{ .Values.awsAccountId }}:role/{{ .Values.operatorRolesPrefix }}-openshift-ingress-operator-cloud-credentials"
+    imageRegistryARN: "arn:aws:iam::{{ .Values.awsAccountId }}:role/{{ .Values.operatorRolesPrefix }}-openshift-image-registry-installer-cloud-credentials"
+    storageARN: "arn:aws:iam::{{ .Values.awsAccountId }}:role/{{ .Values.operatorRolesPrefix }}-openshift-cluster-csi-drivers-ebs-cloud-credentials"
+    networkARN: "arn:aws:iam::{{ .Values.awsAccountId }}:role/{{ .Values.operatorRolesPrefix }}-openshift-cloud-network-config-controller-cloud-credentials"
+    kubeCloudControllerARN: "arn:aws:iam::{{ .Values.awsAccountId }}:role/{{ .Values.operatorRolesPrefix }}-kube-system-kube-controller-manager"
+    nodePoolManagementARN: "arn:aws:iam::{{ .Values.awsAccountId }}:role/{{ .Values.operatorRolesPrefix }}-kube-system-capa-controller-manager"
+    controlPlaneOperatorARN: "arn:aws:iam::{{ .Values.awsAccountId }}:role/{{ .Values.operatorRolesPrefix }}-kube-system-control-plane-operator"
+    kmsProviderARN: "arn:aws:iam::{{ .Values.awsAccountId }}:role/{{ .Values.operatorRolesPrefix }}-kube-system-kms-provider"
+  oidcID: "{{ .Values.oidcConfigId }}"
+  subnets:
+    - "{{ .Values.publicSubnetId }}" # remove if creating a private cluster
+    - "{{ .Values.privateSubnetId }}"
+  availabilityZones:
+    - "{{ .Values.awsAvailabilityZone }}"
+  installerRoleARN: "arn:aws:iam::{{ .Values.awsAccountId }}:role/{{ .Values.accountRolesPrefix }}-HCP-ROSA-Installer-Role"
+  supportRoleARN: "arn:aws:iam::{{ .Values.awsAccountId }}:role/{{ .Values.accountRolesPrefix }}-HCP-ROSA-Support-Role"
+  workerRoleARN: "arn:aws:iam::{{ .Values.awsAccountId }}:role/{{ .Values.accountRolesPrefix }}-HCP-ROSA-Worker-Role"
+---
+apiVersion: v1
+data:
+  ocmApiUrl: "{{ .Values.ocmApiEncoded }}"
+  ocmToken: "{{ .Values.ocmTokenEncoded }}"
+kind: Secret
+metadata:
+  name: rosa-creds-secret
+type: Opaque

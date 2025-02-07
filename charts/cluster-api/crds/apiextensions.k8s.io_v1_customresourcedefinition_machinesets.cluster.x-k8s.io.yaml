@@ -2,8 +2,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
     controller-gen.kubebuilder.io/version: v0.17.0
-    service.beta.openshift.io/inject-cabundle: "true"
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinesets.cluster.x-k8s.io
@@ -447,9 +447,17 @@ spec:
                 format: int32
                 type: integer
               failureMessage:
+                description: |-
+                  failureMessage will be set in the event that there is a terminal problem
+                  reconciling the Machine and will contain a more verbose string suitable
+                  for logging and human consumption.
                 type: string
               failureReason:
                 description: |-
+                  failureReason will be set in the event that there is a terminal problem
+                  reconciling the Machine and will contain a succinct value suitable
+                  for machine interpretation.
+
                   In the event that there is a terminal problem reconciling the
                   replicas, both FailureReason and FailureMessage will be set. FailureReason
                   will be populated with a succinct value suitable for machine
@@ -868,9 +876,17 @@ spec:
                   type: object
                 type: array
               failureMessage:
+                description: |-
+                  failureMessage will be set in the event that there is a terminal problem
+                  reconciling the Machine and will contain a more verbose string suitable
+                  for logging and human consumption.
                 type: string
               failureReason:
                 description: |-
+                  failureReason will be set in the event that there is a terminal problem
+                  reconciling the Machine and will contain a succinct value suitable
+                  for machine interpretation.
+
                   In the event that there is a terminal problem reconciling the
                   replicas, both FailureReason and FailureMessage will be set. FailureReason
                   will be populated with a succinct value suitable for machine
@@ -1382,12 +1398,19 @@ spec:
                   type: object
                 type: array
               failureMessage:
-                description: 'Deprecated: This field is deprecated and is going to
-                  be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md
-                  for more details.'
+                description: |-
+                  failureMessage will be set in the event that there is a terminal problem
+                  reconciling the Machine and will contain a more verbose string suitable
+                  for logging and human consumption.
+
+                  Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
                 type: string
               failureReason:
                 description: |-
+                  failureReason will be set in the event that there is a terminal problem
+                  reconciling the Machine and will contain a succinct value suitable
+                  for machine interpretation.
+
                   In the event that there is a terminal problem reconciling the
                   replicas, both FailureReason and FailureMessage will be set. FailureReason
                   will be populated with a succinct value suitable for machine

@@ -1,9 +1,8 @@
-OCP_VERSION ?= 4.18
+CAPA_VERSION ?= nightly_main_20250122
+CAPI_VERSION ?= dev
 BRANCH ?= main
 SYNC2CHARTS ?= true
 ORGREPO ?= https://github.com/kubernetes-sigs
-
-# /cluster-api-provider-aws/blob/main/config/crd/bases/controlplane.cluster.x-k8s.io_rosacontrolplanes.yaml
 
 build-cluster-api-chart: PROJECT = cluster-api
 build-cluster-api-aws-chart: PROJECT = cluster-api-provider-aws
@@ -18,12 +17,12 @@ build: build-cluster-api-chart build-cluster-api-aws-chart build-cluster-api-azu
 .PHONY: build-cluster-api-chart
 build-cluster-api-chart:
 	WKDIR=$(WKDIR) ORGREPO=$(ORGREPO) PROJECT=$(PROJECT) BRANCH=$(BRANCH) ../scripts/build.sh
-	OCP_VERSION=$(OCP_VERSION) SYNC2CHARTS=$(SYNC2CHARTS) BUILTDIR="$(BUILTDIR)" PROJECT=$(PROJECT) ../scripts/sync2chart.sh
+	PROVIDER_VERSION=$(CAPI_VERSION) SYNC2CHARTS=$(SYNC2CHARTS) BUILTDIR="$(BUILTDIR)" PROJECT=$(PROJECT) ../scripts/sync2chart.sh
 
 .PHONY: build-cluster-api-aws-chart
 build-cluster-api-aws-chart:
 	WKDIR=$(WKDIR) ORGREPO=$(ORGREPO) PROJECT=$(PROJECT) BRANCH=$(BRANCH) ../scripts/build.sh
-	OCP_VERSION=$(OCP_VERSION) SYNC2CHARTS=$(SYNC2CHARTS) BUILTDIR="$(BUILTDIR)" PROJECT=$(PROJECT) ../scripts/sync2chart.sh
+	PROVIDER_VERSION=$(CAPA_VERSION) SYNC2CHARTS=$(SYNC2CHARTS) BUILTDIR="$(BUILTDIR)" PROJECT=$(PROJECT) ../scripts/sync2chart.sh
 
 .PHONY: test-chart-crc
 test-chart-crc:

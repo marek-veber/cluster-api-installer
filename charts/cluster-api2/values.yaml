@@ -1,0 +1,6 @@
+manager:
+  cmd: /bin/cluster-api-controller-manager
+  image:
+    url: quay.io/mveber/ose-cluster-kube-cluster-api-rhel9-operator
+    tag: v4.18-ns-separation
+

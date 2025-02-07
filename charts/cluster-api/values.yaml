@@ -1,5 +1,5 @@
 manager:
-  cmd: /bin/cluster-api-controller-manager
+  cmd: /manager
   image:
-    tag: v4.18
-    url: registry.redhat.io/openshift4/ose-cluster-api-rhel9
+    url: quay.io/mveber/cluster-api/cluster-api-controller-amd64
+    tag: dev

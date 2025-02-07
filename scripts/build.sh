@@ -46,7 +46,3 @@ mkdir -p $CONFIGDIR/$TMPDIR
 $KUSTOMIZE build config/default > $SRC_RESOURCES
 # do the replacements
 $KUSTOMIZE build --enable-alpha-plugins config -o $CONFIGDIR/$TMPDIR
-rm -rf $CONFIGDIR/$TMPDIR/cert*
-if [ "$PROJECT" == "cluster-api" ] ; then
-    rm -rf $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_ip*.yaml
-fi
