@@ -1,5 +1,5 @@
 #!/bin/bash
-CLUSTERCTL=clusterctl
+CLUSTERCTL="${CLUSTERCTL:-clusterctl}"
 TMP_FILE=$(mktemp kustomize-envsubst.XXXXXXXXXX)
 cat > "$TMP_FILE"
 for VAR_NAME in $($CLUSTERCTL generate yaml --list-variables < "$TMP_FILE" |grep '^  - '|sed -e 's/^  - //') ; do
