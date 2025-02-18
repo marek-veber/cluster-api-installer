@@ -2,7 +2,7 @@ name: Sync
 
 on:
   schedule:
-    - cron: "38 15 * * *" 
+    - cron: "00 15 * * *" 
 
 jobs:
   build:
