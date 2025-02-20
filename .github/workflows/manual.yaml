@@ -43,7 +43,7 @@ jobs:
       if: ${{ steps.sync.outputs.updated_cluster-api == 'true' }}
       uses: peter-evans/create-pull-request@v7
       with:
-        token: ${{ secrets.PAT }}
+        # token: ${{ secrets.PAT }}
         commit-message: Update report
         committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
         author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
