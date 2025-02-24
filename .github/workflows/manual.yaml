@@ -62,8 +62,8 @@ jobs:
           automated pr
         assignees: marek-veber
         reviewers: marek-veber
-        team-reviewers: |
-          developers
+#        team-reviewers: |
+#          developers
 #        milestone: 1
         draft: true
 
