@@ -27,6 +27,11 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - name: test-target-branch
+      id: check-branch-exists
+      uses: GuillaumeFalourd/branch-exists@v1.1
+      with:
+        branch: example-patches
     - name: checkout
       uses: actions/checkout@v4
     # # Runs a single command using the runners shell
@@ -40,7 +45,7 @@ jobs:
       run: make build-helm-charts
     - name: Create Pull Request CAPI
       id: cpr-capi
-      if: ${{ steps.sync.outputs.updated_cluster-api == 'true' }}
+      if: ${{ steps.sync.outputs.updated_cluster-api == 'true' && steps.check-branch-exists.outputs.exists == 'false' }}
       uses: peter-evans/create-pull-request@v7
       with:
         # token: ${{ secrets.PAT }}
