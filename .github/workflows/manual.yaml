@@ -64,6 +64,6 @@ jobs:
         reviewers: marek-veber
         team-reviewers: |
           developers
-        milestone: 1
+#        milestone: 1
         draft: true
 
