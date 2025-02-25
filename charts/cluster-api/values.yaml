@@ -2,4 +2,4 @@ manager:
   cmd: /manager
   image:
     url: quay.io/mveber/cluster-api/cluster-api-controller-amd64
-    tag: dev
+    tag: v4.19
