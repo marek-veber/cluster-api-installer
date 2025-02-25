@@ -11,4 +11,4 @@ manager:
   cmd: /manager
   image:
     url: gcr.io/k8s-staging-cluster-api-aws/cluster-api-aws-controller
-    tag: nightly_main_20250122
+    tag: v4.19
