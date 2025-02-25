@@ -24,16 +24,25 @@ if [ "$SYNC2CHARTS" ] ;then
     rm -rf $CHARTDIR/crds/*.yaml
     mv $BUILTDIR/apiextensions*.yaml $CHARTDIR/crds
     mv $BUILTDIR/*.yaml $CHARTDIR/templates
+    if [ "$PROVIDER_VERSION" == "dev" ] ; then PROVIDER_VERSION="4.19"; fi
+    if [ "$PROVIDER_VERSION" == "nightly_main_20250122" ] ; then PROVIDER_VERSION="4.19"; fi
 
     echo "updating versions($PROVIDER_VERSION) in:" "$CHARTDIR/Chart.yaml" "$CHARTDIR/values.yaml"
     sed -i -e 's/^\(version\|appVersion\): .*/\1: "'"$PROVIDER_VERSION"'"/' "$CHARTDIR/Chart.yaml"
-    TAG_VERSION="$PROVIDER_VERSION"
-    if "$TAG_VERSION" : "[0-9]" ; then TAG_VERSION="v$TAG_VERSION" ; fi
-    sed -i -e 's/^\(    tag: \).*/\1'"$TAG_VERSION"/ "$CHARTDIR/values.yaml"
+    sed -i -e 's/^\(    tag: \).*/\1v'"$PROVIDER_VERSION"/ "$CHARTDIR/values.yaml"
     
     echo 'Run helm template after sync saving the output to ' $NEWCHART
     $HELM template $CHARTDIR --include-crds | \
       grep -v '^#' > $NEWCHART
+
+    if [ -n "$GITHUB_OUTPUT" ] ; then
+        echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT NEWCHART=$NEWCHART"
+        # when started under github workflow
+        if [ $(git diff --name-only "$CHARTDIR"|wc -l) -gt 0 ] ; then
+            echo "updated_$PROJECT=true" >> "$GITHUB_OUTPUT"
+            echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT updated$PROJECT ... NEWCHART=$NEWCHART"
+        fi
+    fi
     
     if [ "$SORTED_OUTPUT" == "true" ] ; then
       $YQ ea '[.] | sort_by(.apiVersion,.kind,.metadata.name) | .[] | splitDoc|sort_keys(..)' < "$NEWCHART" > "${NEWCHART#.yaml}-sorted.yaml"
