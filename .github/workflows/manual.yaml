@@ -55,6 +55,7 @@ jobs:
       with:
         # token: ${{ secrets.PAT }}
         commit-message: CAPI Update report
+        add-paths: charts/cluster-api, src/cluster-api.yaml
         committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
         author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
         signoff: false
@@ -81,6 +82,7 @@ jobs:
       with:
         # token: ${{ secrets.PAT }}
         commit-message: CAPA Update report
+        add-paths: charts/cluster-api-provider-aws, src/cluster-api-provider-aws.yaml
         committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
         author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
         signoff: false
