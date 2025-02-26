@@ -1,0 +1,6 @@
+manager:                                                                                                                                                                     
+  cmd: /bin/cluster-api-controller-manager
+  image:                                                                                                                                                                     
+    url: quay.io/mveber/cluster-api/cluster-api-controller-amd64
+    tag: dev
+
