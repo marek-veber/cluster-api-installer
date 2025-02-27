@@ -20,8 +20,7 @@ spec:
     spec:
       containers:
       - args:
-        - --excluded-namespace=rosa-mveber1-b
-        - --excluded-namespace=rosa-mveber1-a
+        - --watch-filter=capi2
         - --leader-elect
         - --diagnostics-address=:8443
         - --insecure-diagnostics=false
