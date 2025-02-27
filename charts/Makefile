@@ -1,3 +1,4 @@
+OCP_VERSION ?= 4.19
 CAPA_VERSION ?= nightly_main_20250122
 CAPI_VERSION ?= dev
 BRANCH ?= main
@@ -17,12 +18,12 @@ build: build-cluster-api-chart build-cluster-api-aws-chart build-cluster-api-azu
 .PHONY: build-cluster-api-chart
 build-cluster-api-chart:
 	WKDIR=$(WKDIR) ORGREPO=$(ORGREPO) PROJECT=$(PROJECT) BRANCH=$(BRANCH) ../scripts/build.sh
-	PROVIDER_VERSION=$(CAPI_VERSION) SYNC2CHARTS=$(SYNC2CHARTS) BUILTDIR="$(BUILTDIR)" PROJECT=$(PROJECT) ../scripts/sync2chart.sh
+	OCP_VERSION=$(OCP_VERSION) PROVIDER_VERSION=$(CAPI_VERSION) SYNC2CHARTS=$(SYNC2CHARTS) BUILTDIR="$(BUILTDIR)" PROJECT=$(PROJECT) ../scripts/sync2chart.sh
 
 .PHONY: build-cluster-api-aws-chart
 build-cluster-api-aws-chart:
 	WKDIR=$(WKDIR) ORGREPO=$(ORGREPO) PROJECT=$(PROJECT) BRANCH=$(BRANCH) ../scripts/build.sh
-	PROVIDER_VERSION=$(CAPA_VERSION) SYNC2CHARTS=$(SYNC2CHARTS) BUILTDIR="$(BUILTDIR)" PROJECT=$(PROJECT) ../scripts/sync2chart.sh
+	OCP_VERSION=$(OCP_VERSION) PROVIDER_VERSION=$(CAPA_VERSION) SYNC2CHARTS=$(SYNC2CHARTS) BUILTDIR="$(BUILTDIR)" PROJECT=$(PROJECT) ../scripts/sync2chart.sh
 
 .PHONY: test-chart-crc
 test-chart-crc:

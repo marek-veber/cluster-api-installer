@@ -9,6 +9,10 @@ if [ -z "$PROVIDER_VERSION" ]; then
     echo "PROVIDER_VERSION must be defned ex; 4.18"
     exit -1
 fi
+if [ -z "$OCP_VERSION" ]; then
+    echo "OCP_VERSION must be defned ex; 4.18"
+    exit -1
+fi
 if [ -z "$BUILTDIR" ]; then
     echo "BUILTDIR must be set"
     exit -1
@@ -25,8 +29,8 @@ if [ "$SYNC2CHARTS" ] ;then
     mv $BUILTDIR/apiextensions*.yaml $CHARTDIR/crds
     mv $BUILTDIR/*.yaml $CHARTDIR/templates
 
-    echo "updating versions($PROVIDER_VERSION) in:" "$CHARTDIR/Chart.yaml" "$CHARTDIR/values.yaml"
-    sed -i -e 's/^\(version\|appVersion\): .*/\1: "'"$PROVIDER_VERSION"'"/' "$CHARTDIR/Chart.yaml"
+    echo "updating versions($OCP_VERSION) in:" "$CHARTDIR/Chart.yaml" "$CHARTDIR/values.yaml"
+    sed -i -e 's/^\(version\|appVersion\): .*/\1: "'"$OCP_VERSION"'"/' "$CHARTDIR/Chart.yaml"
     TAG_VERSION="$PROVIDER_VERSION"
     if "$TAG_VERSION" : "[0-9]" ; then TAG_VERSION="v$TAG_VERSION" ; fi
     sed -i -e 's/^\(    tag: \).*/\1'"$TAG_VERSION"/ "$CHARTDIR/values.yaml"
