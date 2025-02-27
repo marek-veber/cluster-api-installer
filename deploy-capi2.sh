@@ -4,6 +4,7 @@ if [ "${DO_DEPLOY:=true}" == "true" ] ; then
     if [ "$UPDATE_RESOURCES" == "true" ] ; then
         for i in 1 2 ; do
             CH_DIR="charts/cluster-api$i"
+            echo ========= updating: $CH_DIR
             rm -rf "$CH_DIR"/{crds,templates}
             mkdir -p "$CH_DIR"/{crds,templates}
             kustomize build config/cluster-api${i} --load-restrictor LoadRestrictionsNone -o "$CH_DIR/templates"
