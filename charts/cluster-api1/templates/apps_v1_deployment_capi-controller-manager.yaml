@@ -20,8 +20,7 @@ spec:
     spec:
       containers:
       - args:
-        - --namespace=capi1-ns-2
-        - --namespace=capi1-ns-1
+        - --watch-filter=capi1
         - --leader-elect
         - --diagnostics-address=:8443
         - --insecure-diagnostics=false
