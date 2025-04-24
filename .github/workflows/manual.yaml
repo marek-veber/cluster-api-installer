@@ -24,3 +24,4 @@ jobs:
     secrets:
       personal_access_token: ${{ secrets.GITHUB_TOKEN }}
       JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+      ACTIONS_RUNNER_DEBUG: true
