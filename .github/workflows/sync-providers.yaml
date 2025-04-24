@@ -82,4 +82,18 @@ jobs:
         assignees: marek-veber
         reviewers: marek-veber
         draft: true
+    - name: Create Jira task CAPA
+      id: jira-capa
+      if: ${{ steps.sync.outputs.updated_cluster-api-provider-aws == 'true' && steps.check-branch-exists-capa.outputs.exists == 'false' }}
+      uses: bryannice/gitactions-jira-issue-creation@master
+      env:
+          JIRA_ACCOUNT_URL: https://issues.redhat.com
+          # JIRA_API_TOKEN: defined as github project ENV secret
+          # JIRA_ISSUE_ATTACHMENT: log_file.log
+          JIRA_ISSUE_DESCRIPTION: "[CAPA] Update report - review request ${{ steps.cpr-capa.outputs.pull-request-number }}"
+          JIRA_ISSUE_SUMMARY: "Please review the PR ${{ steps.cpr.outputs.pull-request-url }}"
+          JIRA_ISSUE_TYPE: Task
+          JIRA_PROJECT: JIRAPLAY
+          JIRA_USERNAME: mveber@redhat.com
+      
 
