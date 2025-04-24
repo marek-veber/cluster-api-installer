@@ -115,10 +115,10 @@ jobs:
         method: POST
     - name: Show API Response Status
       run: |
-        echo "Response Status: ${{ steps.jira-capa.outputs.response-status }}"
+        echo "Response Status: ${{ steps.jira-capa.outputs.status }}"
     - name: Show API Response Data
       run: |
-        echo "Response Data: ${{ steps.jira-capa.outputs.response-data }}"
+        echo "Response Data: ${{ steps.jira-capa.outputs.response }}"
 
       
 
