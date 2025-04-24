@@ -105,8 +105,8 @@ jobs:
                   {
                      "key": "${{ env.JIRA_PROJECT }}"
                   },
-                  "summary": "Please review the PR ${{ steps.cpr-capa.outputs.pull-request-url }}",
-                  "description": "[CAPA] Update report - review request ${{ steps.cpr-capa.outputs.pull-request-number }}",
+                  "summary": "[cluster-api-installer/CAPA] Please review the PR ${{ steps.cpr-capa.outputs.pull-request-number }}",
+                  "description": "[cluster-api-installer/CAPA] Update report - review request ${{ steps.cpr-capa.outputs.pull-request-url }}",
                   "issuetype": {
                      "name": "Task"
                   }
