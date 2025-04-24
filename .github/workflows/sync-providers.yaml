@@ -99,7 +99,7 @@ jobs:
         url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
         customHeaders: |
             {
-                "Authorization": Bearer ${{ secrets.JIRA_API_TOKENi }}"
+                "Authorization": "Bearer ${{ secrets.JIRA_API_TOKENi }}",
                 "Content-Type": "application/json"
             }
         data: |
