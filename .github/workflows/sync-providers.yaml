@@ -9,6 +9,15 @@ on:
     secrets:
       personal_access_token:
         required: true
+      JIRA_API_TOKEN:
+        required: true
+
+env:
+  JIRA_BASE_URL: https://issues.redhat.com
+  JIRA_USER_EMAIL: mveber@redhat.com
+  JIRA_PROJECT: JIRAPLAY
+  
+    
 
 
 jobs:
@@ -82,18 +91,20 @@ jobs:
         assignees: marek-veber
         reviewers: marek-veber
         draft: true
+    - name: Login to Jira
+      uses: atlassian/gajira-login@v3
+      env:
+        JIRA_BASE_URL: ${{ env.JIRA_BASE_URL }}
+        JIRA_USER_EMAIL: ${{ env.JIRA_USER_EMAIL }}
+        JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
     - name: Create Jira task CAPA
       id: jira-capa
       if: ${{ steps.sync.outputs.updated_cluster-api-provider-aws == 'true' && steps.check-branch-exists-capa.outputs.exists == 'false' }}
-      uses: bryannice/gitactions-jira-issue-creation@master
-      env:
-          JIRA_ACCOUNT_URL: https://issues.redhat.com
-          # JIRA_API_TOKEN: defined as github project ENV secret
-          # JIRA_ISSUE_ATTACHMENT: log_file.log
-          JIRA_ISSUE_DESCRIPTION: "[CAPA] Update report - review request ${{ steps.cpr-capa.outputs.pull-request-number }}"
-          JIRA_ISSUE_SUMMARY: "Please review the PR ${{ steps.cpr.outputs.pull-request-url }}"
-          JIRA_ISSUE_TYPE: Task
-          JIRA_PROJECT: JIRAPLAY
-          JIRA_USERNAME: mveber@redhat.com
+      uses: atlassian/gajira-create@v3
+      with:
+        project: ${{ env.JIRA_PROJECT }}
+        issuetype: Task
+        summary: "Please review the PR ${{ steps.cpr-capa.outputs.pull-request-url }}"
+        description: "[CAPA] Update report - review request ${{ steps.cpr-capa.outputs.pull-request-number }}"
       
 
