@@ -94,15 +94,15 @@ jobs:
     - name: Create Jira task CAPA
       id: jira-capa
       if: ${{ steps.sync.outputs.updated_cluster-api-provider-aws == 'true' && steps.check-branch-exists-capa.outputs.exists == 'false' }}
-      uses: muhfaris/request-action@v1
+      uses: fjogeleit/http-request-action@v1
       with:
         url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
-        headers: |
+        customHeaders: |
             {
                 "Authorization": Bearer ${{ secrets.JIRA_API_TOKENi }}"
                 "Content-Type": "application/json"
             }
-        body: |
+        data: |
             {
                "fields": {
                   "project":
