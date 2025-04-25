@@ -48,7 +48,7 @@ if [ "$SYNC2CHARTS" ] ;then
     if [ -n "$GITHUB_OUTPUT" ] ; then
         echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT NEWCHART=$NEWCHART"
         # when started under github workflow
-        if [ $(git diff --name-only "$CHARTDIR"|wc -l) -gt 0 ] ; then
+        if [ $(git diff --name-only "$CHARTDIR" src/$PROJECT.yaml|wc -l) -gt 0 ] ; then
             echo "updated_$PROJECT=true" >> "$GITHUB_OUTPUT"
             echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT updated$PROJECT ... NEWCHART=$NEWCHART"
         fi
