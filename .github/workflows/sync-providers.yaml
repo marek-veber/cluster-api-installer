@@ -132,7 +132,7 @@ jobs:
         echo "Response update-epic Data: ${{ steps.jira-epic-capa.outputs.response }}"
     - name: Create Jira task CAPI
       id: jira-capi
-      if: ${{ steps.sync.outputs.updated_cluster-api-provider-aws == 'true' && steps.check-branch-exists-capi.outputs.exists == 'false' }}
+      if: ${{ steps.sync.outputs.updated_cluster-api == 'true' && steps.check-branch-exists-capi.outputs.exists == 'false' }}
       uses: fjogeleit/http-request-action@v1
       with:
         url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
