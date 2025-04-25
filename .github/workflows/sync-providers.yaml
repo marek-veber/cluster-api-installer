@@ -123,8 +123,49 @@ jobs:
               }
             }
         method: PUT
-    - name: Show API Response
+    - name: Show Jira task CAPA API Responses
       run: |
         echo "Response Status (create, update-epic): ${{ steps.jira-capa.outputs.status }}, ${{ steps.jira-epic-capa.outputs.status }}"
         echo "Response create Data: ${{ steps.jira-capa.outputs.response }}"
         echo "Response update-epic Data: ${{ steps.jira-epic-capa.outputs.response }}"
+    - name: Create Jira task CAPI
+      id: jira-capi
+      if: ${{ steps.sync.outputs.updated_cluster-api-provider-aws == 'true' && steps.check-branch-exists-capi.outputs.exists == 'false' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "project":
+                  {
+                     "key": "${{ env.JIRA_PROJECT }}"
+                  },
+                  "summary": "[cluster-api-installer/CAPI] Please review the PR ${{ steps.cpr-capi.outputs.pull-request-number }}",
+                  "description": "[cluster-api-installer/CAPI] Update report - review request ${{ steps.cpr-capi.outputs.pull-request-url }}",
+                  "issuetype": {
+                     "name": "Task"
+                  }
+              }
+            }
+        method: POST
+    - name: Update epic in Jira task CAPI
+      id: jira-epic-capi
+      if: ${{ steps.jira-capi.outputs.status == '201' && fromJson(steps.jira-capi.outputs.response).id != '' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira-capi.outputs.response).id}}"
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "customfield_12311140": "ACM-19825"
+              }
+            }
+        method: PUT
+    - name: Show Jira task CAPI API Responses
+      run: |
+        echo "Response Status (create, update-epic): ${{ steps.jira-capi.outputs.status }}, ${{ steps.jira-epic-capi.outputs.status }}"
+        echo "Response create Data: ${{ steps.jira-capi.outputs.response }}"
+        echo "Response update-epic Data: ${{ steps.jira-epic-capi.outputs.response }}"
