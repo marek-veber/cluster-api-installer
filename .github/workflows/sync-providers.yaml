@@ -59,7 +59,7 @@ jobs:
           - Updated with *today's* date
         labels: |
           capi
-          capi@${{inputs.dst-branch}}
+          capi-${{inputs.dst-branch}}
           report
           automated pr
         assignees: marek-veber
@@ -83,7 +83,7 @@ jobs:
           - Updated with *today's* date
         labels: |
           capa
-          capa@${{inputs.dst-branch}}
+          capa-${{inputs.dst-branch}}
           report
           automated pr
         assignees: marek-veber
