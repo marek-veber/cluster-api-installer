@@ -53,12 +53,13 @@ jobs:
         signoff: false
         branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capi') }}
         delete-branch: true
-        title: '[CAPI] Update report'
+        title: '[CAPI@${{inputs.dst-branch}}] Update report'
         body: |
-          CAPI Update report
+          CAPI@${{inputs.dst-branch}} Update report
           - Updated with *today's* date
         labels: |
           capi
+          capi@${{inputs.dst-branch}}
           report
           automated pr
         assignees: marek-veber
@@ -76,12 +77,13 @@ jobs:
         signoff: false
         branch: ${{ format('{0}-pr-patches-{1}', inputs.dst-branch, 'capa') }}
         delete-branch: true
-        title: '[CAPA] Update report'
+        title: '[CAPA@${{inputs.dst-branch}}] Update report'
         body: |
-          CAPA Update report
+          CAPA@${{inputs.dst-branch}} Update report
           - Updated with *today's* date
         labels: |
           capa
+          capa@${{inputs.dst-branch}}
           report
           automated pr
         assignees: marek-veber
@@ -101,8 +103,8 @@ jobs:
                   {
                      "key": "${{ env.JIRA_PROJECT }}"
                   },
-                  "summary": "[cluster-api-installer/CAPA] Please review the PR ${{ steps.cpr-capa.outputs.pull-request-number }}",
-                  "description": "[cluster-api-installer/CAPA] Update report - review request ${{ steps.cpr-capa.outputs.pull-request-url }}",
+                  "summary": "[cluster-api-installer/CAPA@${{inputs.dst-branch}}] Please review the PR ${{ steps.cpr-capa.outputs.pull-request-number }}",
+                  "description": "[cluster-api-installer/CAPA@${{inputs.dst-branch}}] Update report - review request ${{ steps.cpr-capa.outputs.pull-request-url }}",
                   "issuetype": {
                      "name": "Task"
                   }
@@ -142,8 +144,8 @@ jobs:
                   {
                      "key": "${{ env.JIRA_PROJECT }}"
                   },
-                  "summary": "[cluster-api-installer/CAPI] Please review the PR ${{ steps.cpr-capi.outputs.pull-request-number }}",
-                  "description": "[cluster-api-installer/CAPI] Update report - review request ${{ steps.cpr-capi.outputs.pull-request-url }}",
+                  "summary": "[cluster-api-installer/CAPI@${{inputs.dst-branch}}] Please review the PR ${{ steps.cpr-capi.outputs.pull-request-number }}",
+                  "description": "[cluster-api-installer/CAPI@${{inputs.dst-branch}}] Update report - review request ${{ steps.cpr-capi.outputs.pull-request-url }}",
                   "issuetype": {
                      "name": "Task"
                   }
