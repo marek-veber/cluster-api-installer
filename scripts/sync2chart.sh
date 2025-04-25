@@ -25,6 +25,8 @@ fi
 
 CHARTDIR=../charts/$PROJECT
 NEWCHART=$BUILTDIR/new-chart.yml
+SRC_PROJECT_FILE=../src/$PROJECT.yaml
+[ ! -f "$SRC_PROJECT_FILE" ] && SRC_PROJECT_FILE=""
 
 if [ "$SYNC2CHARTS" ] ;then
     echo 'sync new output to ' $CHARTDIR
@@ -48,7 +50,7 @@ if [ "$SYNC2CHARTS" ] ;then
     if [ -n "$GITHUB_OUTPUT" ] ; then
         echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT NEWCHART=$NEWCHART"
         # when started under github workflow
-        if [ $(git diff --name-only "$CHARTDIR" src/$PROJECT.yaml|wc -l) -gt 0 ] ; then
+        if [ $(git diff --name-only "$CHARTDIR" $SRC_PROJECT_FILE|wc -l) -gt 0 ] ; then
             echo "updated_$PROJECT=true" >> "$GITHUB_OUTPUT"
             echo "using: GITHUB_OUTPUT=$GITHUB_OUTPUT updated$PROJECT ... NEWCHART=$NEWCHART"
         fi
