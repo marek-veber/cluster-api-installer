@@ -125,6 +125,6 @@ jobs:
         method: PUT
     - name: Show API Response
       run: |
-        echo "Response Status (create, update-epic): ${{ steps.jira-capa.outputs.status }}, ${{ steps.jira-epic-capa.outputs.status }"
+        echo "Response Status (create, update-epic): ${{ steps.jira-capa.outputs.status }}, ${{ steps.jira-epic-capa.outputs.status }}"
         echo "Response create Data: ${{ steps.jira-capa.outputs.response }}"
         echo "Response update-epic Data: ${{ steps.jira-epic-capa.outputs.response }}"
