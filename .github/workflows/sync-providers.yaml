@@ -14,11 +14,8 @@ on:
 
 env:
   JIRA_BASE_URL: https://issues.redhat.com
-  JIRA_USER_EMAIL: mveber@redhat.com
   JIRA_PROJECT: JIRAPLAY
   
-    
-
 
 jobs:
   # This workflow contains a single job called "greet"
@@ -113,12 +110,25 @@ jobs:
               }
             }
         method: POST
-    - name: Show API Response Status
+    - name: Update epic in Jira task CAPA
+      id: jira-epic-capa
+      if: ${{ steps.jira-capa.outputs.status == '201' && fromJson(steps.jira-capa.outputs.response).id != '' }}
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira-capa.outputs.response).id}}".
+        bearerToken: ${{ secrets.JIRA_API_TOKEN }}
+        data: |
+            {
+               "fields": {
+                  "customfield_12311140": "ACM-19825"
+              }
+            }
+        method: PUT
+    - name: Show API Response
       run: |
-        echo "Response Status: ${{ steps.jira-capa.outputs.status }}"
-    - name: Show API Response Data
-      run: |
-        echo "Response Data: ${{ steps.jira-capa.outputs.response }}"
+        echo "Response Status (create, update-epic): ${{ steps.jira-capa.outputs.status }}, ${{ steps.jira-epic-capa.outputs.status }"
+        echo "Response create Data: ${{ steps.jira-capa.outputs.response }}"
+        echo "Response update-epic Data: ${{ steps.jira-epic-capa.outputs.response }}"
 
       
 
