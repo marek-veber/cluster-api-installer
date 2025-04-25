@@ -15,7 +15,6 @@ on:
 env:
   JIRA_BASE_URL: https://issues.redhat.com
   JIRA_PROJECT: JIRAPLAY
-  
 
 jobs:
   # This workflow contains a single job called "greet"
@@ -38,7 +37,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4
       with:
-       ref: ${{ inputs.dst-branch }}
+        ref: ${{ inputs.dst-branch }}
     - name: Sync
       id: sync
       run: make build-helm-charts
@@ -115,7 +114,7 @@ jobs:
       if: ${{ steps.jira-capa.outputs.status == '201' && fromJson(steps.jira-capa.outputs.response).id != '' }}
       uses: fjogeleit/http-request-action@v1
       with:
-        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira-capa.outputs.response).id}}".
+        url: "${{ env.JIRA_BASE_URL }}/rest/api/2/issue/${{fromJson(steps.jira-capa.outputs.response).id}}"
         bearerToken: ${{ secrets.JIRA_API_TOKEN }}
         data: |
             {
@@ -129,6 +128,3 @@ jobs:
         echo "Response Status (create, update-epic): ${{ steps.jira-capa.outputs.status }}, ${{ steps.jira-epic-capa.outputs.status }"
         echo "Response create Data: ${{ steps.jira-capa.outputs.response }}"
         echo "Response update-epic Data: ${{ steps.jira-epic-capa.outputs.response }}"
-
-      
-
