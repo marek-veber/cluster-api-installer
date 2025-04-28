@@ -11,6 +11,11 @@ on:
         required: true
       JIRA_API_TOKEN:
         required: true
+env:
+  JIRA_BASE_URL: ${{ vars.JIRA_BASE_URL }}
+  JIRA_PROJECT: ${{ vars.JIRA_PROJECT }}
+  JIRA_EPIC_LINK: ${{ vars.JIRA_EPIC_LINK }}
+  
 
 jobs:
   # This workflow contains a single job called "greet"
