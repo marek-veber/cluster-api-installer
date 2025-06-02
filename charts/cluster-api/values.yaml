@@ -1,8 +1,8 @@
 manager:
-  cmd: /bin/cluster-api-controller-manager
+  cmd: /manager
   image:
-    tag: v4.19
-    url: registry.redhat.io/openshift4/ose-cluster-api-rhel9
+    tag: release-1.9
+    url: gcr.io/k8s-staging-cluster-api/cluster-api-controller
 webhook:
   image:
     tag: 65e3d999c7fe4cb335c35e2c0c7754a11129d8dc-linux-x86-64
