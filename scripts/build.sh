@@ -66,7 +66,7 @@ else
       ${KUSTOMIZE} build --enable-alpha-plugins "${subdir}/config" -o "${CONFIGDIR}/${TMPDIR}"
   done
 fi
-rm -rf $CONFIGDIR/$TMPDIR/cert*
+#rm -rf $CONFIGDIR/$TMPDIR/cert*
 if [ "$PROJECT" == "cluster-api" ] ; then
     rm -rf $CONFIGDIR/$TMPDIR/apiextensions.k8s.io_v1_customresourcedefinition_ip*.yaml
 fi
