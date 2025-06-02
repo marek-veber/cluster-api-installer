@@ -27,15 +27,15 @@ WKDIR ?= ../out
 build-cluster-api-chart:
 	@echo "Building cluster-api chart"
 	WKDIR="$(WKDIR)" \
-	ORGREPO="$(DEFAULT_ORGREPO)" \
+	ORGREPO="https://github.com/kubernetes-sigs" \
 	PROJECT="cluster-api" \
-	BRANCH="$(CAPI_BRANCH)" \
+	BRANCH="release-1.9" \
 	../scripts/build.sh
 	BUILTDIR="$(WKDIR)/cluster-api/config/tmp" \
 	CHART_VERSION="$(OCP_VERSION)" \
 	CHART_APP_VERSION="$(OCP_VERSION)" \
-	CHART_VALUES_IMAGE_TAG="$(OCP_VERSION)" \
-	CHART_VALUES_IMAGE_TAG_PREFIX="v" \
+	CHART_VALUES_IMAGE_TAG="release-1.9" \
+	CHART_VALUES_IMAGE_TAG_PREFIX="" \
 	SYNC2CHARTS="$(SYNC2CHARTS)" \
 	PROJECT="cluster-api" \
 	../scripts/sync2chart.sh
@@ -55,6 +55,23 @@ build-cluster-api-provider-aws-chart:
 	CHART_VALUES_IMAGE_TAG_PREFIX="v" \
 	SYNC2CHARTS="$(SYNC2CHARTS)" \
 	PROJECT="cluster-api-provider-aws" \
+	../scripts/sync2chart.sh
+
+.PHONY: build-cluster-api-provider-azure-chart
+build-cluster-api-provider-azure-chart:
+	@echo "Building cluster-api-provider-azure chart"
+	WKDIR="$(WKDIR)" \
+	ORGREPO="https://github.com/marek-veber" \
+	PROJECT="cluster-api-provider-azure" \
+	BRANCH="ARO-1st-aproach" \
+	../scripts/build.sh
+	BUILTDIR="$(WKDIR)/cluster-api-provider-azure/config/tmp" \
+	CHART_VERSION="$(OCP_VERSION)" \
+	CHART_APP_VERSION="$(OCP_VERSION)" \
+	CHART_VALUES_IMAGE_TAG="dev" \
+	CHART_VALUES_IMAGE_TAG_PREFIX="" \
+	SYNC2CHARTS="$(SYNC2CHARTS)" \
+	PROJECT="cluster-api-provider-azure" \
 	../scripts/sync2chart.sh
 
 .PHONY: build-cluster-api-provider-openshift-assisted-chart
