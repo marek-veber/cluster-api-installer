@@ -6,6 +6,7 @@ metadata:
     controller-gen.kubebuilder.io/version: v0.16.1
   labels:
     cluster.x-k8s.io/provider: infrastructure-azure
+    cluster.x-k8s.io/v1beta2: v1beta2
   name: aroclusters.infrastructure.cluster.x-k8s.io
 spec:
   group: infrastructure.cluster.x-k8s.io
@@ -34,7 +35,7 @@ spec:
       name: Endpoint
       priority: 1
       type: string
-    name: v1beta1
+    name: v1beta2
     schema:
       openAPIV3Schema:
         description: AROCluster is the Schema for the AROClusters API.
