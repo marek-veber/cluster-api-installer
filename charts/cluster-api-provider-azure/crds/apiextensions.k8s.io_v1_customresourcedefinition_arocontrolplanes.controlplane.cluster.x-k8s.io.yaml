@@ -6,9 +6,10 @@ metadata:
     controller-gen.kubebuilder.io/version: v0.16.1
   labels:
     cluster.x-k8s.io/provider: infrastructure-azure
-  name: arocontrolplanes.infrastructure.cluster.x-k8s.io
+    cluster.x-k8s.io/v1beta2: v1beta2
+  name: arocontrolplanes.controlplane.cluster.x-k8s.io
 spec:
-  group: infrastructure.cluster.x-k8s.io
+  group: controlplane.cluster.x-k8s.io
   names:
     categories:
     - cluster-api
@@ -29,7 +30,7 @@ spec:
       jsonPath: .status.ready
       name: Ready
       type: string
-    name: v1beta1
+    name: v1beta2
     schema:
       openAPIV3Schema:
         description: AROControlPlane is the Schema for the AROControlPlanes API.
@@ -62,7 +63,7 @@ spec:
                 type: object
               aroClusterName:
                 description: |-
-                  Cluster name must beDiskStorageAccountType valid DNS-1035 label, so it must consist of lower case alphanumeric
+                  Cluster name must be valid DNS-1035 label, so it must consist of lower case alphanumeric
                   characters or '-', start with an alphabetic character, end with an alphanumeric character
                   and have a max length of 54 characters.
                 maxLength: 54
@@ -190,15 +191,15 @@ spec:
                               Microsoft.ManagedIdentity/userAssignedIdentities
                             type: string
                           clusterApiAzureManagedIdentities:
-                            description: ClusterApiAzureManagedIdentities "cluster-api-azure"
+                            description: ClusterAPIAzureManagedIdentities "cluster-api-azure"
                               Microsoft.ManagedIdentity/userAssignedIdentities
                             type: string
                           controlPlaneOperatorsManagedIdentities:
                             description: ControlPlaneManagedIdentities "control-plane"
                               Microsoft.ManagedIdentity/userAssignedIdentities
                             type: string
-                          diskCsiDrivereManagedIdentities:
-                            description: DiskCsiDrivereManagedIdentities "disk-csi-driver"
+                          diskCsiDriverManagedIdentities:
+                            description: DiskCsiDriverManagedIdentities "disk-csi-driver"
                               Microsoft.ManagedIdentity/userAssignedIdentities
                             type: string
                           fileCsiDriverManagedIdentities:
@@ -224,8 +225,8 @@ spec:
                       dataPlaneOperators:
                         description: DataPlaneOperators ref to Microsoft.ManagedIdentity/userAssignedIdentities
                         properties:
-                          diskCsiDrivereManagedIdentities:
-                            description: DiskCsiDrivereManagedIdentities "disk-csi-driver"
+                          diskCsiDriverManagedIdentities:
+                            description: DiskCsiDriverManagedIdentities "disk-csi-driver"
                               Microsoft.ManagedIdentity/userAssignedIdentities
                             type: string
                           fileCsiDriverManagedIdentities:
@@ -249,6 +250,10 @@ spec:
                       egress to the Internet. Allowed value is loadBalancer
                     type: string
                   resourceGroup:
+                    description: Resource group name where the ARO-hcp will be attached
+                      to it.
+                    type: string
+                  resourceGroupRef:
                     description: ResourceGroup Ref name that is used to create the
                       ResourceGroup CR. The ResourceGroupRef must be in the same namespace
                       as the AROControlPlane and cannot be set with ResourceGroup.
@@ -292,7 +297,7 @@ spec:
             description: AROControlPlaneStatus defines the observed state of AROControlPlane.
             properties:
               apiURL:
-                description: ApiURL is the url for the ARO-HCP openshift cluster api
+                description: APIURL is the url for the ARO-HCP openshift cluster api
                   endPoint.
                 type: string
               availableUpgrades:
