@@ -10,17 +10,23 @@ if ! (kind get clusters 2>/dev/null|grep -q '^aso2$') ; then
 fi
 
 export AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-if [ ! -f sp.json ] ; then
+export AZURE_SUBSCRIPTION_NAME=$(az account show --query name --output tsv)
+if [ "$AZURE_SUBSCRIPTION_NAME" == "ARO SRE Team - INT (EA Subscription 3)" ] ;then
+    export REGION=${REGION:-uksouth}
+else
+    export REGION=${REGION:-westus3}
+fi
+SP_JSON_FILE="sp-$AZURE_SUBSCRIPTION_ID.json"
+if [ ! -f "$SP_JSON_FILE" ] ; then
     let "randomIdentifier=$RANDOM*$RANDOM"
     servicePrincipalName="msdocs-sp-$randomIdentifier"
     roleName="Contributor"
     echo "Creating SP for RBAC with name $servicePrincipalName, with role $roleName and in scopes /subscriptions/$AZURE_SUBSCRIPTION_ID"
-    az ad sp create-for-rbac --name $servicePrincipalName --role $roleName --scopes /subscriptions/$AZURE_SUBSCRIPTION_ID > sp.json
+    az ad sp create-for-rbac --name $servicePrincipalName --role $roleName --scopes /subscriptions/$AZURE_SUBSCRIPTION_ID > "$SP_JSON_FILE"
 fi
-export AZURE_TENANT_ID=$(jq -r .tenant sp.json)
-export AZURE_CLIENT_ID=$(jq -r .appId sp.json)
-export AZURE_CLIENT_SECRET=$(jq -r .password sp.json)
-export REGION=westus3
+export AZURE_TENANT_ID=$(jq -r .tenant "$SP_JSON_FILE")
+export AZURE_CLIENT_ID=$(jq -r .appId "$SP_JSON_FILE")
+export AZURE_CLIENT_SECRET=$(jq -r .password "$SP_JSON_FILE")
 
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -45,6 +51,7 @@ for CHART in charts/cluster-api \
     helm template $CHART --include-crds|kubectl apply -f - --server-side --force-conflicts
     echo
 done
+
 
 for T in capi capz; do
     PROJECT="cluster-api"

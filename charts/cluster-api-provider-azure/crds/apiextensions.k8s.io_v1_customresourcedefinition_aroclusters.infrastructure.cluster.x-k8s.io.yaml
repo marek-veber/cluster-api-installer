@@ -30,6 +30,10 @@ spec:
       jsonPath: .status.ready
       name: Ready
       type: string
+    - description: Control plane infrastructure is provisioned
+      jsonPath: .status.initialization.provisioned
+      name: Provisioned
+      type: boolean
     - description: API Endpoint
       jsonPath: .spec.controlPlaneEndpoint.host
       name: Endpoint
@@ -151,6 +155,18 @@ spec:
                   type: object
                 description: FailureDomains specifies a list fo available availability
                   zones that can be used
+                type: object
+              initialization:
+                description: |-
+                  initialization provides observations of the AROCluster initialization process.
+                  NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Machine provisioning.
+                properties:
+                  provisioned:
+                    description: |-
+                      provision is true when the AROCluster provider reports that the infra cluster is provisioned;
+                      A infra cluster is considered provisioned when it has valid endpoint.
+                      NOTE: this field is part of the Cluster API contract, and it is used to orchestrate initial Machine provisioning.
+                    type: boolean
                 type: object
               ready:
                 description: Ready is when the AROControlPlane has a API server URL.

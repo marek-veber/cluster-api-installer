@@ -1,9 +1,9 @@
 manager:
   cmd: /manager
   image:
-    tag: release-1.9
+    tag: main
     url: gcr.io/k8s-staging-cluster-api/cluster-api-controller
 webhook:
   image:
-    tag: 65e3d999c7fe4cb335c35e2c0c7754a11129d8dc-linux-x86-64
-    url: quay.io/redhat-user-workloads/crt-redhat-acm-tenant/cluster-api-webhook-config-mce-29
+    tag: latest
+    url: quay.io/mveber/mce-capi-webhook-config

@@ -18,11 +18,12 @@ metadata:
   creationTimestamp: null
   name: mce-capi-webhook-config-configuration
   annotations:
-    cert-manager.io/inject-ca-from: default/mce-capi-webhook-config
+    cert-manager.io/inject-ca-from: capi-system/mce-capi-webhook-config
 webhooks:
 - admissionReviewVersions:
   - v1
   - v1beta1
+  - v1beta2
   - v1alpha1
   clientConfig:
     service:
@@ -43,6 +44,7 @@ webhooks:
     - "*"
     apiVersions:
     - v1beta1
+    - v1beta2
     operations:
     - CREATE
     - UPDATE
