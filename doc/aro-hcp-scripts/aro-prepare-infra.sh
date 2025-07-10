@@ -6,13 +6,11 @@ export AZURE_SUBSCRIPTION_NAME=$(az account show --query name --output tsv)
 export USER=${USER:-user1}
 export CS_CLUSTER_NAME=${CS_CLUSTER_NAME:-$USER-aro}
 export NAME_PREFIX=${NAME_PREFIX:-aro-hcp}
-RESOURCEGROUPNAME="$USER-$CS_CLUSTER_NAME-$NAME_PREFIX-resgroup"
+export RESOURCEGROUPNAME="$USER-$CS_CLUSTER_NAME-$NAME_PREFIX-resgroup"
 
-if [ "$AZURE_SUBSCRIPTION_NAME" == "ARO SRE Team - INT (EA Subscription 3)" ] ;then
-    export REGION=${REGION:-uksouth}
-else
-    export REGION=${REGION:-westus3}
-fi
+[ "$AZURE_SUBSCRIPTION_NAME" == "ARO SRE Team - INT (EA Subscription 3)"    ] && export REGION=${REGION:-uksouth}
+[ "$AZURE_SUBSCRIPTION_NAME" == "ARO HCP - STAGE testing (EA Subscription)" ] && export REGION=${REGION:-uksouth}
+export REGION=${REGION:-westus3}
 if [ -n "$OICD_RESOURCE_GROUP" -a -n "$USER_ASSIGNED_IDENTITY" ] ; then
     export AZURE_TENANT_ID=$(az identity show --query tenantId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY}")
     export AZURE_CLIENT_ID=$(az identity show --query clientId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY}")
@@ -166,7 +164,7 @@ cat > infra-names.js <<EOF
     "USER": "$USER",
     "CS_CLUSTER_NAME": "$CS_CLUSTER_NAME",
     "NSG": "$NAME_PREFIX-nsg",
-    "RESOURCEGROUPNAME": "$NAME_PREFIX-resgroup",
+    "RESOURCEGROUPNAME": "$RESOURCEGROUPNAME",
     "VNET": "$NAME_PREFIX-vnet",
     "SUBNET": "$NAME_PREFIX-subnet",
     "OCP_VERSION": "$OCP_VERSION",

@@ -17,12 +17,9 @@ export CS_CLUSTER_NAME=${CS_CLUSTER_NAME:-$USER-aro}
 export NAME_PREFIX=${NAME_PREFIX:-aro-hcp}
 export RESOURCEGROUPNAME="$USER-$CS_CLUSTER_NAME-$NAME_PREFIX-resgroup"
 
-if [ "$AZURE_SUBSCRIPTION_NAME" == "ARO SRE Team - INT (EA Subscription 3)" ] ;then
-    export REGION=${REGION:-uksouth}
-else
-    export REGION=${REGION:-westus3}
-fi
-
+[ "$AZURE_SUBSCRIPTION_NAME" == "ARO SRE Team - INT (EA Subscription 3)"    ] && export REGION=${REGION:-uksouth}
+[ "$AZURE_SUBSCRIPTION_NAME" == "ARO HCP - STAGE testing (EA Subscription)" ] && export REGION=${REGION:-uksouth}
+export REGION=${REGION:-westus3}
 if [ -n "$OICD_RESOURCE_GROUP" ] ; then
     export AZURE_ASO_TENANT_ID=$(az identity show --query tenantId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ASO}")
     export AZURE_ASO_CLIENT_ID=$(az identity show --query clientId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ASO}")

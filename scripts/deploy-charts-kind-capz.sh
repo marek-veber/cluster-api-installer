@@ -11,11 +11,9 @@ fi
 
 export AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
 export AZURE_SUBSCRIPTION_NAME=$(az account show --query name --output tsv)
-if [ "$AZURE_SUBSCRIPTION_NAME" == "ARO SRE Team - INT (EA Subscription 3)" ] ;then
-    export REGION=${REGION:-uksouth}
-else
-    export REGION=${REGION:-westus3}
-fi
+[ "$AZURE_SUBSCRIPTION_NAME" == "ARO SRE Team - INT (EA Subscription 3)"    ] && export REGION=${REGION:-uksouth}
+[ "$AZURE_SUBSCRIPTION_NAME" == "ARO HCP - STAGE testing (EA Subscription)" ] && export REGION=${REGION:-uksouth}
+export REGION=${REGION:-westus3}
 SP_JSON_FILE="sp-$AZURE_SUBSCRIPTION_ID.json"
 if [ ! -f "$SP_JSON_FILE" ] ; then
     let "randomIdentifier=$RANDOM*$RANDOM"
