@@ -287,9 +287,7 @@ spec:
     vmSize: "Standard_D4s_v3"
     diskSizeGiB: 128
     diskStorageAccountType: "Premium_LRS"
-    availabilityZone: "zone-1"
 labels:
-   node-role.kubernetes.io/worker: ""
    region: ${REGION}
 taints:
   - key: "example.com/special"
