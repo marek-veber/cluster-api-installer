@@ -1224,7 +1224,6 @@ spec:
           status:
             description: status is the most recently observed status of MachineHealthCheck
               resource
-            minProperties: 1
             properties:
               conditions:
                 description: |-
@@ -1390,8 +1389,6 @@ spec:
                 maxItems: 10000
                 type: array
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true

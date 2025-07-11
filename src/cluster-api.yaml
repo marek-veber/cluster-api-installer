@@ -3040,9 +3040,10 @@ spec:
                       This field is supported if and only if the control plane provider template
                       referenced above is Machine based and supports setting replicas.
                     properties:
-                      templateRef:
-                        description: templateRef is a required reference to the template
-                          for a MachineInfrastructure of a ControlPlane.
+                      ref:
+                        description: |-
+                          ref is a required reference to a custom resource
+                          offered by a provider.
                         properties:
                           apiVersion:
                             description: |-
@@ -3074,7 +3075,7 @@ spec:
                         - name
                         type: object
                     required:
-                    - templateRef
+                    - ref
                     type: object
                   metadata:
                     description: |-
@@ -3085,7 +3086,6 @@ spec:
 
                       This field is supported if and only if the control plane provider template
                       referenced is Machine based.
-                    minProperties: 1
                     properties:
                       annotations:
                         additionalProperties:
@@ -3193,9 +3193,10 @@ spec:
                     x-kubernetes-list-map-keys:
                     - conditionType
                     x-kubernetes-list-type: map
-                  templateRef:
-                    description: templateRef contains the reference to a provider-specific
-                      control plane template.
+                  ref:
+                    description: |-
+                      ref is a required reference to a custom resource
+                      offered by a provider.
                     properties:
                       apiVersion:
                         description: |-
@@ -3227,7 +3228,7 @@ spec:
                     - name
                     type: object
                 required:
-                - templateRef
+                - ref
                 type: object
               infrastructure:
                 description: |-
@@ -3251,9 +3252,10 @@ spec:
                         minLength: 1
                         type: string
                     type: object
-                  templateRef:
-                    description: templateRef contains the reference to a provider-specific
-                      infrastructure cluster template.
+                  ref:
+                    description: |-
+                      ref is a required reference to a custom resource
+                      offered by a provider.
                     properties:
                       apiVersion:
                         description: |-
@@ -3285,7 +3287,7 @@ spec:
                     - name
                     type: object
                 required:
-                - templateRef
+                - ref
                 type: object
               patches:
                 description: |-
@@ -3520,7 +3522,6 @@ spec:
                         a ClusterClassVariable.
 
                         Deprecated: This field is deprecated and will be removed when support for v1beta1 will be dropped. Please use XMetadata in JSONSchemaProps instead.
-                      minProperties: 1
                       properties:
                         annotations:
                           additionalProperties:
@@ -3922,7 +3923,6 @@ spec:
                   workers describes the worker nodes for the cluster.
                   It is a collection of node types which can be used to create
                   the worker nodes of the cluster.
-                minProperties: 1
                 properties:
                   machineDeployments:
                     description: |-
@@ -4266,9 +4266,10 @@ spec:
                                 bootstrap contains the bootstrap template reference to be used
                                 for the creation of worker Machines.
                               properties:
-                                templateRef:
-                                  description: templateRef is a required reference
-                                    to the BootstrapTemplate for a MachineDeployment.
+                                ref:
+                                  description: |-
+                                    ref is a required reference to a custom resource
+                                    offered by a provider.
                                   properties:
                                     apiVersion:
                                       description: |-
@@ -4300,16 +4301,17 @@ spec:
                                   - name
                                   type: object
                               required:
-                              - templateRef
+                              - ref
                               type: object
                             infrastructure:
                               description: |-
                                 infrastructure contains the infrastructure template reference to be used
                                 for the creation of worker Machines.
                               properties:
-                                templateRef:
-                                  description: templateRef is a required reference
-                                    to the InfrastructureTemplate for a MachineDeployment.
+                                ref:
+                                  description: |-
+                                    ref is a required reference to a custom resource
+                                    offered by a provider.
                                   properties:
                                     apiVersion:
                                       description: |-
@@ -4341,13 +4343,12 @@ spec:
                                   - name
                                   type: object
                               required:
-                              - templateRef
+                              - ref
                               type: object
                             metadata:
                               description: |-
                                 metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
                                 At runtime this metadata is merged with the corresponding metadata from the topology.
-                              minProperties: 1
                               properties:
                                 annotations:
                                   additionalProperties:
@@ -4472,9 +4473,10 @@ spec:
                                 bootstrap contains the bootstrap template reference to be used
                                 for the creation of the Machines in the MachinePool.
                               properties:
-                                templateRef:
-                                  description: templateRef is a required reference
-                                    to the BootstrapTemplate for a MachinePool.
+                                ref:
+                                  description: |-
+                                    ref is a required reference to a custom resource
+                                    offered by a provider.
                                   properties:
                                     apiVersion:
                                       description: |-
@@ -4506,16 +4508,17 @@ spec:
                                   - name
                                   type: object
                               required:
-                              - templateRef
+                              - ref
                               type: object
                             infrastructure:
                               description: |-
                                 infrastructure contains the infrastructure template reference to be used
                                 for the creation of the MachinePool.
                               properties:
-                                templateRef:
-                                  description: templateRef is a required reference
-                                    to the InfrastructureTemplate for a MachinePool.
+                                ref:
+                                  description: |-
+                                    ref is a required reference to a custom resource
+                                    offered by a provider.
                                   properties:
                                     apiVersion:
                                       description: |-
@@ -4547,13 +4550,12 @@ spec:
                                   - name
                                   type: object
                               required:
-                              - templateRef
+                              - ref
                               type: object
                             metadata:
                               description: |-
                                 metadata is the metadata applied to the MachinePool.
                                 At runtime this metadata is merged with the corresponding metadata from the topology.
-                              minProperties: 1
                               properties:
                                 annotations:
                                   additionalProperties:
@@ -4588,13 +4590,9 @@ spec:
                     - class
                     x-kubernetes-list-type: map
                 type: object
-            required:
-            - controlPlane
-            - infrastructure
             type: object
           status:
             description: status is the observed state of ClusterClass.
-            minProperties: 1
             properties:
               conditions:
                 description: |-
@@ -4751,7 +4749,6 @@ spec:
                               a ClusterClassVariable.
 
                               Deprecated: This field is deprecated and will be removed when support for v1beta1 will be dropped. Please use XMetadata in JSONSchemaProps instead.
-                            minProperties: 1
                             properties:
                               annotations:
                                 additionalProperties:
@@ -5176,8 +5173,6 @@ spec:
                 maxItems: 1000
                 type: array
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true
@@ -5605,8 +5600,6 @@ spec:
             required:
             - clusterName
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true
@@ -6358,7 +6351,6 @@ spec:
             type: object
           status:
             description: status is the observed state of ClusterResourceSet.
-            minProperties: 1
             properties:
               conditions:
                 description: |-
@@ -6496,8 +6488,6 @@ spec:
                 minimum: 1
                 type: integer
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true
@@ -8668,7 +8658,7 @@ spec:
   - additionalPrinterColumns:
     - description: ClusterClass of this Cluster, empty if the Cluster is not using
         a ClusterClass
-      jsonPath: .spec.topology.classRef.name
+      jsonPath: .spec.topology.class
       name: ClusterClass
       type: string
     - description: Cluster status such as Pending/Provisioning/Provisioned/Deleting/Failed
@@ -8707,7 +8697,6 @@ spec:
             type: object
           spec:
             description: spec is the desired state of Cluster.
-            minProperties: 1
             properties:
               availabilityGates:
                 description: |-
@@ -8795,19 +8784,18 @@ spec:
               controlPlaneEndpoint:
                 description: controlPlaneEndpoint represents the endpoint used to
                   communicate with the control plane.
-                minProperties: 1
                 properties:
                   host:
                     description: host is the hostname on which the API server is serving.
                     maxLength: 512
-                    minLength: 1
                     type: string
                   port:
                     description: port is the port on which the API server is serving.
                     format: int32
-                    maximum: 65535
-                    minimum: 1
                     type: integer
+                required:
+                - host
+                - port
                 type: object
               controlPlaneRef:
                 description: |-
@@ -8922,7 +8910,6 @@ spec:
                     type: object
                   controlPlane:
                     description: controlPlane describes the cluster control plane.
-                    minProperties: 1
                     properties:
                       machineHealthCheck:
                         description: |-
@@ -9061,7 +9048,6 @@ spec:
                           if the ControlPlaneTemplate referenced by the ClusterClass is machine based. If not, it
                           is applied only to the ControlPlane.
                           At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
-                        minProperties: 1
                         properties:
                           annotations:
                             additionalProperties:
@@ -9397,7 +9383,6 @@ spec:
                               description: |-
                                 metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
                                 At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
-                              minProperties: 1
                               properties:
                                 annotations:
                                   additionalProperties:
@@ -9678,7 +9663,6 @@ spec:
                               description: |-
                                 metadata is the metadata applied to the MachinePool.
                                 At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
-                              minProperties: 1
                               properties:
                                 annotations:
                                   additionalProperties:
@@ -9801,7 +9785,6 @@ spec:
             type: object
           status:
             description: status is the observed state of Cluster.
-            minProperties: 1
             properties:
               conditions:
                 description: |-
@@ -10089,8 +10072,6 @@ spec:
                     type: integer
                 type: object
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true
@@ -10507,7 +10488,6 @@ spec:
               clientConfig:
                 description: clientConfig defines how to communicate with the Extension
                   server.
-                minProperties: 1
                 properties:
                   caBundle:
                     description: caBundle is a PEM encoded CA bundle which will be
@@ -10634,7 +10614,6 @@ spec:
             type: object
           status:
             description: status is the current state of the ExtensionConfig
-            minProperties: 1
             properties:
               conditions:
                 description: |-
@@ -10822,8 +10801,6 @@ spec:
                 - name
                 x-kubernetes-list-type: map
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true
@@ -11294,7 +11271,6 @@ spec:
             type: object
           status:
             description: status is the observed state of IPAddressClaim.
-            minProperties: 1
             properties:
               addressRef:
                 description: addressRef is a reference to the address that was created
@@ -11441,8 +11417,6 @@ spec:
                     type: object
                 type: object
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true
@@ -11796,8 +11770,6 @@ spec:
             - poolRef
             - prefix
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true
@@ -13910,7 +13882,6 @@ spec:
                     description: |-
                       metadata is the standard object's metadata.
                       More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-                    minProperties: 1
                     properties:
                       annotations:
                         additionalProperties:
@@ -14150,7 +14121,6 @@ spec:
             type: object
           status:
             description: status is the observed state of MachineDeployment.
-            minProperties: 1
             properties:
               availableReplicas:
                 description: availableReplicas is the number of available replicas
@@ -14364,8 +14334,6 @@ spec:
                 format: int32
                 type: integer
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true
@@ -16391,7 +16359,6 @@ spec:
           status:
             description: status is the most recently observed status of MachineHealthCheck
               resource
-            minProperties: 1
             properties:
               conditions:
                 description: |-
@@ -16557,8 +16524,6 @@ spec:
                 maxItems: 10000
                 type: array
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true
@@ -18281,7 +18246,6 @@ spec:
                     description: |-
                       metadata is the standard object's metadata.
                       More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-                    minProperties: 1
                     properties:
                       annotations:
                         additionalProperties:
@@ -18520,7 +18484,6 @@ spec:
             type: object
           status:
             description: status is the observed state of MachinePool.
-            minProperties: 1
             properties:
               availableReplicas:
                 description: availableReplicas is the number of available replicas
@@ -18803,8 +18766,6 @@ spec:
                 format: int32
                 type: integer
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true
@@ -20557,7 +20518,6 @@ spec:
             type: object
           status:
             description: status is the observed state of Machine.
-            minProperties: 1
             properties:
               addresses:
                 description: |-
@@ -20915,8 +20875,6 @@ spec:
                 - Unknown
                 type: string
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true
@@ -22694,7 +22652,6 @@ spec:
                     description: |-
                       metadata is the standard object's metadata.
                       More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-                    minProperties: 1
                     properties:
                       annotations:
                         additionalProperties:
@@ -22934,7 +22891,6 @@ spec:
             type: object
           status:
             description: status is the observed state of MachineSet.
-            minProperties: 1
             properties:
               availableReplicas:
                 description: availableReplicas is the number of available replicas
@@ -23160,8 +23116,6 @@ spec:
                 format: int32
                 type: integer
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true

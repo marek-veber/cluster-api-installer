@@ -3032,9 +3032,10 @@ spec:
                       This field is supported if and only if the control plane provider template
                       referenced above is Machine based and supports setting replicas.
                     properties:
-                      templateRef:
-                        description: templateRef is a required reference to the template
-                          for a MachineInfrastructure of a ControlPlane.
+                      ref:
+                        description: |-
+                          ref is a required reference to a custom resource
+                          offered by a provider.
                         properties:
                           apiVersion:
                             description: |-
@@ -3066,7 +3067,7 @@ spec:
                         - name
                         type: object
                     required:
-                    - templateRef
+                    - ref
                     type: object
                   metadata:
                     description: |-
@@ -3077,7 +3078,6 @@ spec:
 
                       This field is supported if and only if the control plane provider template
                       referenced is Machine based.
-                    minProperties: 1
                     properties:
                       annotations:
                         additionalProperties:
@@ -3185,9 +3185,10 @@ spec:
                     x-kubernetes-list-map-keys:
                     - conditionType
                     x-kubernetes-list-type: map
-                  templateRef:
-                    description: templateRef contains the reference to a provider-specific
-                      control plane template.
+                  ref:
+                    description: |-
+                      ref is a required reference to a custom resource
+                      offered by a provider.
                     properties:
                       apiVersion:
                         description: |-
@@ -3219,7 +3220,7 @@ spec:
                     - name
                     type: object
                 required:
-                - templateRef
+                - ref
                 type: object
               infrastructure:
                 description: |-
@@ -3243,9 +3244,10 @@ spec:
                         minLength: 1
                         type: string
                     type: object
-                  templateRef:
-                    description: templateRef contains the reference to a provider-specific
-                      infrastructure cluster template.
+                  ref:
+                    description: |-
+                      ref is a required reference to a custom resource
+                      offered by a provider.
                     properties:
                       apiVersion:
                         description: |-
@@ -3277,7 +3279,7 @@ spec:
                     - name
                     type: object
                 required:
-                - templateRef
+                - ref
                 type: object
               patches:
                 description: |-
@@ -3512,7 +3514,6 @@ spec:
                         a ClusterClassVariable.
 
                         Deprecated: This field is deprecated and will be removed when support for v1beta1 will be dropped. Please use XMetadata in JSONSchemaProps instead.
-                      minProperties: 1
                       properties:
                         annotations:
                           additionalProperties:
@@ -3914,7 +3915,6 @@ spec:
                   workers describes the worker nodes for the cluster.
                   It is a collection of node types which can be used to create
                   the worker nodes of the cluster.
-                minProperties: 1
                 properties:
                   machineDeployments:
                     description: |-
@@ -4258,9 +4258,10 @@ spec:
                                 bootstrap contains the bootstrap template reference to be used
                                 for the creation of worker Machines.
                               properties:
-                                templateRef:
-                                  description: templateRef is a required reference
-                                    to the BootstrapTemplate for a MachineDeployment.
+                                ref:
+                                  description: |-
+                                    ref is a required reference to a custom resource
+                                    offered by a provider.
                                   properties:
                                     apiVersion:
                                       description: |-
@@ -4292,16 +4293,17 @@ spec:
                                   - name
                                   type: object
                               required:
-                              - templateRef
+                              - ref
                               type: object
                             infrastructure:
                               description: |-
                                 infrastructure contains the infrastructure template reference to be used
                                 for the creation of worker Machines.
                               properties:
-                                templateRef:
-                                  description: templateRef is a required reference
-                                    to the InfrastructureTemplate for a MachineDeployment.
+                                ref:
+                                  description: |-
+                                    ref is a required reference to a custom resource
+                                    offered by a provider.
                                   properties:
                                     apiVersion:
                                       description: |-
@@ -4333,13 +4335,12 @@ spec:
                                   - name
                                   type: object
                               required:
-                              - templateRef
+                              - ref
                               type: object
                             metadata:
                               description: |-
                                 metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
                                 At runtime this metadata is merged with the corresponding metadata from the topology.
-                              minProperties: 1
                               properties:
                                 annotations:
                                   additionalProperties:
@@ -4464,9 +4465,10 @@ spec:
                                 bootstrap contains the bootstrap template reference to be used
                                 for the creation of the Machines in the MachinePool.
                               properties:
-                                templateRef:
-                                  description: templateRef is a required reference
-                                    to the BootstrapTemplate for a MachinePool.
+                                ref:
+                                  description: |-
+                                    ref is a required reference to a custom resource
+                                    offered by a provider.
                                   properties:
                                     apiVersion:
                                       description: |-
@@ -4498,16 +4500,17 @@ spec:
                                   - name
                                   type: object
                               required:
-                              - templateRef
+                              - ref
                               type: object
                             infrastructure:
                               description: |-
                                 infrastructure contains the infrastructure template reference to be used
                                 for the creation of the MachinePool.
                               properties:
-                                templateRef:
-                                  description: templateRef is a required reference
-                                    to the InfrastructureTemplate for a MachinePool.
+                                ref:
+                                  description: |-
+                                    ref is a required reference to a custom resource
+                                    offered by a provider.
                                   properties:
                                     apiVersion:
                                       description: |-
@@ -4539,13 +4542,12 @@ spec:
                                   - name
                                   type: object
                               required:
-                              - templateRef
+                              - ref
                               type: object
                             metadata:
                               description: |-
                                 metadata is the metadata applied to the MachinePool.
                                 At runtime this metadata is merged with the corresponding metadata from the topology.
-                              minProperties: 1
                               properties:
                                 annotations:
                                   additionalProperties:
@@ -4580,13 +4582,9 @@ spec:
                     - class
                     x-kubernetes-list-type: map
                 type: object
-            required:
-            - controlPlane
-            - infrastructure
             type: object
           status:
             description: status is the observed state of ClusterClass.
-            minProperties: 1
             properties:
               conditions:
                 description: |-
@@ -4743,7 +4741,6 @@ spec:
                               a ClusterClassVariable.
 
                               Deprecated: This field is deprecated and will be removed when support for v1beta1 will be dropped. Please use XMetadata in JSONSchemaProps instead.
-                            minProperties: 1
                             properties:
                               annotations:
                                 additionalProperties:
@@ -5168,8 +5165,6 @@ spec:
                 maxItems: 1000
                 type: array
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true

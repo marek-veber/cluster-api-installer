@@ -1714,7 +1714,6 @@ spec:
                     description: |-
                       metadata is the standard object's metadata.
                       More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-                    minProperties: 1
                     properties:
                       annotations:
                         additionalProperties:
@@ -1953,7 +1952,6 @@ spec:
             type: object
           status:
             description: status is the observed state of MachinePool.
-            minProperties: 1
             properties:
               availableReplicas:
                 description: availableReplicas is the number of available replicas
@@ -2236,8 +2234,6 @@ spec:
                 format: int32
                 type: integer
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true

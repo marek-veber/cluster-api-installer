@@ -2,8 +2,7 @@ OCP_VERSION ?= 4.19
 SYNC2CHARTS ?= true
 
 DEFAULT_ORGREPO ?= https://github.com/openshift
-CAPI_BRANCH ?= main
-#CAPI_BRANCH=v1.11.0-alpha.2
+CAPI_BRANCH=v1.11.0-alpha.2
 CAPA_BRANCH ?= main
 # needs overridable branch, as the non-master branch will differ
 OPENSHIFT_ASSISTED_BRANCH ?= master
@@ -35,7 +34,7 @@ build-cluster-api-chart:
 	BUILTDIR="$(WKDIR)/cluster-api/config/tmp" \
 	CHART_VERSION="$(OCP_VERSION)" \
 	CHART_APP_VERSION="$(OCP_VERSION)" \
-	CHART_VALUES_IMAGE_TAG="$(CAPA_BRANCH)" \
+	CHART_VALUES_IMAGE_TAG="$(CAPI_BRANCH)" \
 	CHART_VALUES_IMAGE_TAG_PREFIX="" \
 	SYNC2CHARTS="$(SYNC2CHARTS)" \
 	PROJECT="cluster-api" \
