@@ -110,7 +110,7 @@ spec:
    location: \${REGION}
    resourceGroup: \${RESOURCEGROUPNAME}
    subnet: "/subscriptions/\${AZURE_SUBSCRIPTION_ID}/resourceGroups/\${RESOURCEGROUPNAME}/providers/Microsoft.Network/virtualNetworks/\${VNET}/subnets/\${SUBNET}"
-   outboundType: loadBalancer
+   outboundType: LoadBalancer
    networkSecurityGroupId: "/subscriptions/\${AZURE_SUBSCRIPTION_ID}/resourceGroups/\${RESOURCEGROUPNAME}/providers/Microsoft.Network/networkSecurityGroups/\${NSG}"
    managedIdentities:
      controlPlaneOperators:
@@ -128,7 +128,7 @@ spec:
        fileCsiDriverManagedIdentities: "/subscriptions/\${AZURE_SUBSCRIPTION_ID}/resourcegroups/\${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/\${USER}-\${CS_CLUSTER_NAME}-dp-file-csi-driver-\${OPERATORS_UAMIS_SUFFIX}"
        imageRegistryManagedIdentities: "/subscriptions/\${AZURE_SUBSCRIPTION_ID}/resourcegroups/\${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/\${USER}-\${CS_CLUSTER_NAME}-dp-image-registry-\${OPERATORS_UAMIS_SUFFIX}"
      serviceManagedIdentity: "/subscriptions/\${AZURE_SUBSCRIPTION_ID}/resourcegroups/\${RESOURCEGROUPNAME}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/\${USER}-\${CS_CLUSTER_NAME}-service-managed-identity-\${OPERATORS_UAMIS_SUFFIX}"
- visibility: public
+ visibility: Public
  network:
    machineCIDR: "10.0.0.0/16"
    podCIDR: "10.128.0.0/14"
