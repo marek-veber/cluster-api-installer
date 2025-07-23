@@ -43,7 +43,7 @@ else
     export AZURE_CLIENT_SECRET=$(jq -r .password "$SP_JSON_FILE")
     export CREATE_AZURE_CLUSTER_IDENTITY=true
 fi
-export OCP_VERSION=${OCP_VERSION:-openshift-v4.18.1}
+export OCP_VERSION=${OCP_VERSION:-openshift-v4.19.0}
 
 INFRA_JSON_FILE="infra-names-$AZURE_SUBSCRIPTION_ID.js"
 if [ ! -f "$INFRA_JSON_FILE" ] ; then
