@@ -45,38 +45,14 @@ else
 fi
 export OCP_VERSION=${OCP_VERSION:-openshift-v4.19.0}
 
-INFRA_JSON_FILE="infra-names-$AZURE_SUBSCRIPTION_ID.js"
-if [ ! -f "$INFRA_JSON_FILE" ] ; then
 OPERATORS_UAMIS_SUFFIX_FILE=operators-uamis-suffix.txt
 if [ ! -f "$OPERATORS_UAMIS_SUFFIX_FILE" ] ; then
     openssl rand -hex 3 > "$OPERATORS_UAMIS_SUFFIX_FILE"
 fi
 OPERATORS_UAMIS_SUFFIX=$(cat "$OPERATORS_UAMIS_SUFFIX_FILE")
-cat > "$INFRA_JSON_FILE" <<EOF
-{
-    "REGION": "$REGION",
-    "USER": "$USER",
-    "CS_CLUSTER_NAME": "$CS_CLUSTER_NAME",
-    "NSG": "$NAME_PREFIX-nsg",
-    "RESOURCEGROUPNAME": "$RESOURCEGROUPNAME",
-    "VNET": "$NAME_PREFIX-vnet",
-    "SUBNET": "$NAME_PREFIX-subnet",
-    "OCP_VERSION": "$OCP_VERSION",
-    "OPERATORS_UAMIS_SUFFIX": "$OPERATORS_UAMIS_SUFFIX"
-}
-EOF
-fi
 
-# "$INFRA_JSON_FILE"
-export CS_CLUSTER_NAME=$(jq   -r .CS_CLUSTER_NAME   "$INFRA_JSON_FILE")
-export RESOURCEGROUPNAME=$(jq -r .RESOURCEGROUPNAME "$INFRA_JSON_FILE")
-export VNET=$(jq              -r .VNET              "$INFRA_JSON_FILE")
-export SUBNET=$(jq            -r .SUBNET            "$INFRA_JSON_FILE")
-export REGION=$(jq            -r .REGION            "$INFRA_JSON_FILE")
-export USER=$(jq              -r .USER              "$INFRA_JSON_FILE")
-export NSG=$(jq               -r .NSG               "$INFRA_JSON_FILE")
-export OCP_VERSION=$(jq       -r .OCP_VERSION       "$INFRA_JSON_FILE")
-export OPERATORS_UAMIS_SUFFIX=$(jq -r .OPERATORS_UAMIS_SUFFIX "$INFRA_JSON_FILE")
+export VNET="$NAME_PREFIX-vnet"
+export SUBNET="$NAME_PREFIX-subnet"
 
 
 # Settings needed for AzureClusterIdentity used by the AzureCluster
