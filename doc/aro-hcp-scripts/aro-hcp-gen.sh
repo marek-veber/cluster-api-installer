@@ -69,7 +69,7 @@ else
     if [ -n "${ASSIGN_ROLE_SP}" ] ; then
         roleName="Custom-Owner (Block Billing and Subscription deletion)"
         export ASSIGN_ROLE_SP_NAME=$(jq -r .displayName "$SP_JSON_FILE")
-        ASSIGN_ROLE_SP_ID=$(az ad sp list --output=json  --display-name mveber-sp-468528336 |jq -r '.[0].id')
+        ASSIGN_ROLE_SP_ID=$(az ad sp list --output=json  --display-name "$ASSIGN_ROLE_SP_NAME" |jq -r '.[0].id')
         echo "assign ASSIGN_ROLE_SP_NAME=$ASSIGN_ROLE_SP_NAME to scope /subscriptions/$AZURE_SUBSCRIPTION_ID"
         az role assignment create --assignee  "${ASSIGN_ROLE_SP_ID}" --role "$roleName" --scope "/subscriptions/${AZURE_SUBSCRIPTION_ID}"
     fi
