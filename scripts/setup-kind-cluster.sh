@@ -15,7 +15,20 @@ HELM_INSTALL_TIMEOUT=${HELM_INSTALL_TIMEOUT:-10m}
 
 if ! (kind get clusters 2>/dev/null|grep -q '^'"$KIND_CLUSTER_NAME"'$') ; then
     SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-    KIND_CFG_NAME="$SCRIPT_DIR/kind-config-$KIND_CLUSTER_NAME.yaml"
+    if [ -z "$KIND_CFG_NAME"] ; then
+        if [ -n "$DOCKER_SECRETS" ] ; then
+            KIND_CFG_NAME="$SCRIPT_DIR/kind-config-$KIND_CLUSTER_NAME.yaml"
+cat << EOF > "$KIND_CFG_NAME"
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraMounts:
+  - hostPath: $DOCKER_SECRETS
+    containerPath: /var/lib/kubelet/config.json
+EOF
+        fi
+    fi
     KIND_OPTS="" 
     if [ -f "$KIND_CFG_NAME" ] ; then
         KIND_OPTS="$KIND_OPTS --config=$KIND_CFG_NAME"
