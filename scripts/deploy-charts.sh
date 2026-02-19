@@ -41,7 +41,7 @@ function set_namespace_and_t {
         ;;
       cluster-api-provider-azure)
         T="capz"
-        NAMESPACE=${NAMESPACE:-"capi-system"}
+        NAMESPACE=${NAMESPACE:-"capz-system"}
         DEPLOYMENTS[$NAMESPACE]="${T}-controller-manager azureserviceoperator-controller-manager"
         ;;
       cluster-api-provider-aws)
