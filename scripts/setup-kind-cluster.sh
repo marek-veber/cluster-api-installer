@@ -12,6 +12,7 @@ set -e
 
 KIND_CLUSTER_NAME=${KIND_CLUSTER_NAME:-${1:-aso2}}
 HELM_INSTALL_TIMEOUT=${HELM_INSTALL_TIMEOUT:-10m}
+KIND_NODE_IMAGE=${KIND_NODE_IMAGE:-kindest/node:v1.31.14}
 
 if ! (kind get clusters 2>/dev/null|grep -q '^'"$KIND_CLUSTER_NAME"'$') ; then
     SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -33,7 +34,7 @@ EOF
     if [ -f "$KIND_CFG_NAME" ] ; then
         KIND_OPTS="$KIND_OPTS --config=$KIND_CFG_NAME"
     fi
-    kind create cluster --name "$KIND_CLUSTER_NAME" --image="kindest/node:v1.31.0" $KIND_OPTS
+    kind create cluster --name "$KIND_CLUSTER_NAME" --image="$KIND_NODE_IMAGE" $KIND_OPTS
     helm repo add jetstack https://charts.jetstack.io --force-update
     helm repo update
     helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set crds.enabled=true --wait --timeout $HELM_INSTALL_TIMEOUT
