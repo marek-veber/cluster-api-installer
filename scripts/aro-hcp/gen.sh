@@ -6,37 +6,52 @@ else
     exit 1
 fi
 set -e
+missing=""
+for var in REGION DEPLOYMENT_ENV AZURE_SUBSCRIPTION_ID AZURE_TENANT_ID AZURE_CLIENT_ID AZURE_CLIENT_SECRET; do
+    [ -z "${!var}" ] && missing="${missing} ${var}"
+done
+if [ -n "$missing" ]; then
+    echo "⚠  NON CI mode - required variables: ${missing}"
+else
+    echo "✓ USING CI mode"
+    export USE_CI=true
+fi
+
+export ENV=${ENV:-${DEPLOYMENT_ENV}}
 export ENV=${ENV:-stage}
 KIND_CLUSTER_NAME="${KIND_CLUSTER_NAME:-aso2}"
 export CREATE_CREDENTIALS=true
-
-if [ "$KIND_CLUSTER_NAME" == "capz-mveber-int" ] ; then
-    export OICD_RESOURCE_GROUP=mveber-oidc-issuer
-    export USER_ASSIGNED_IDENTITY_ASO=mveber-aso-tests
-    export USER_ASSIGNED_IDENTITY_ARO=mveber-aro-tests
-    export ENV=int
-fi
 export NAMESPACE=${NAMESPACE:-default}
 
 
-if [ "$ENV" == int ] ; then
-    export AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME:-"ARO SRE Team - INT (EA Subscription 3)"}
-    export REGION=${REGION:-uksouth}
+if [ "$USE_CI" != "true" ] ; then
+    if [ "$KIND_CLUSTER_NAME" == "capz-mveber-int" ] ; then
+        export OICD_RESOURCE_GROUP=mveber-oidc-issuer
+        export USER_ASSIGNED_IDENTITY_ASO=mveber-aso-tests
+        export USER_ASSIGNED_IDENTITY_ARO=mveber-aro-tests
+        export ENV=int
+    fi
+    
+    
+    if [ "$ENV" == int ] ; then
+        export AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME:-"ARO SRE Team - INT (EA Subscription 3)"}
+        export REGION=${REGION:-uksouth}
+    fi
+    
+    if [ "$ENV" == stage ] ; then
+        export AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME:-"ARO HCP - STAGE testing (EA Subscription)"}
+        export REGION=${REGION:-uksouth}
+    fi
+    
+    export AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv     --subscription "$AZURE_SUBSCRIPTION_NAME")
+    if [ -z "$AZURE_SUBSCRIPTION_ID" ]; then
+        echo "No such subscription: AZURE_SUBSCRIPTION_NAME=$AZURE_SUBSCRIPTION_NAME"
+        exit 1
+    fi
+    export AZURE_SUBSCRIPTION_NAME=$(az account show --query name --output tsv --subscription "$AZURE_SUBSCRIPTION_NAME")
+    
+    echo "AZURE_SUBSCRIPTION_NAME=$AZURE_SUBSCRIPTION_NAME <$AZURE_SUBSCRIPTION_ID>"
 fi
-
-if [ "$ENV" == stage ] ; then
-    export AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME:-"ARO HCP - STAGE testing (EA Subscription)"}
-    export REGION=${REGION:-uksouth}
-fi
-
-export AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv     --subscription "$AZURE_SUBSCRIPTION_NAME")
-if [ -z "$AZURE_SUBSCRIPTION_ID" ]; then
-    echo "No such subscription: AZURE_SUBSCRIPTION_NAME=$AZURE_SUBSCRIPTION_NAME"
-    exit 1
-fi
-export AZURE_SUBSCRIPTION_NAME=$(az account show --query name --output tsv --subscription "$AZURE_SUBSCRIPTION_NAME")
-
-echo "AZURE_SUBSCRIPTION_NAME=$AZURE_SUBSCRIPTION_NAME <$AZURE_SUBSCRIPTION_ID>"
 
 export USER=${USER:-user1}
 export CS_CLUSTER_NAME=${CS_CLUSTER_NAME:-$USER-$ENV}
@@ -47,36 +62,41 @@ export OCP_VERSION_MP=${OCP_VERSION_MP:-$OCP_VERSION.0}
 export REGION=${REGION:-westus3}
 export NODEPOOL_PREFIX="w-${REGION:0:7}"
 
-if [ -n "$OICD_RESOURCE_GROUP" ] ; then
-    export AZURE_ASO_TENANT_ID=$(az identity show --query tenantId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ASO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
-    export AZURE_ASO_CLIENT_ID=$(az identity show --query clientId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ASO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
-    export AZURE_ASO_PRINCIPAL_ID=$(az identity show --query principalId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ASO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
-    # az role assignment create --assignee  "${AZURE_ASO_PRINCIPAL_ID}" --role Contributor --scope "/subscriptions/${AZURE_SUBSCRIPTION_ID}"
-    export AZURE_TENANT_ID=$(az identity show --query tenantId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ARO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
-    export AZURE_CLIENT_ID=$(az identity show --query clientId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ARO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
-    export AZURE_PRINCIPAL_ID=$(az identity show --query principalId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ARO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
-    # az role assignment create --assignee  "${AZURE_PRINCIPAL_ID}" --role Contributor --scope "/subscriptions/${AZURE_SUBSCRIPTION_ID}"
-else
-    SP_JSON_FILE="sp-$AZURE_SUBSCRIPTION_ID.json"
-    if [ ! -s "$SP_JSON_FILE" ] ; then
-        let "randomIdentifier=$RANDOM*$RANDOM"
-        servicePrincipalName="$USER-sp-$randomIdentifier"
-        #roleName="Contributor"
-        roleName="Custom-Owner (Block Billing and Subscription deletion)"
-        echo "Creating SP for RBAC with name $servicePrincipalName, with role $roleName and in scopes /subscriptions/$AZURE_SUBSCRIPTION_ID"
-        az ad sp create-for-rbac --name "$servicePrincipalName" --role "$roleName" --scopes "/subscriptions/$AZURE_SUBSCRIPTION_ID" > "$SP_JSON_FILE"
+
+
+if [ "$USE_CI" != "true" ] ; then
+    if [ -n "$OICD_RESOURCE_GROUP" ] ; then
+        export AZURE_ASO_TENANT_ID=$(az identity show --query tenantId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ASO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
+        export AZURE_ASO_CLIENT_ID=$(az identity show --query clientId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ASO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
+        export AZURE_ASO_PRINCIPAL_ID=$(az identity show --query principalId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ASO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
+        # az role assignment create --assignee  "${AZURE_ASO_PRINCIPAL_ID}" --role Contributor --scope "/subscriptions/${AZURE_SUBSCRIPTION_ID}"
+        export AZURE_TENANT_ID=$(az identity show --query tenantId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ARO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
+        export AZURE_CLIENT_ID=$(az identity show --query clientId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ARO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
+        export AZURE_PRINCIPAL_ID=$(az identity show --query principalId --output=tsv --resource-group="${OICD_RESOURCE_GROUP}" --name="${USER_ASSIGNED_IDENTITY_ARO}" --subscription "$AZURE_SUBSCRIPTION_NAME")
+        # az role assignment create --assignee  "${AZURE_PRINCIPAL_ID}" --role Contributor --scope "/subscriptions/${AZURE_SUBSCRIPTION_ID}"
+    else
+        SP_JSON_FILE="sp-$AZURE_SUBSCRIPTION_ID.json"
+        if [ ! -s "$SP_JSON_FILE" ] ; then
+            let "randomIdentifier=$RANDOM*$RANDOM"
+            servicePrincipalName="$USER-sp-$randomIdentifier"
+            #roleName="Contributor"
+            roleName="Custom-Owner (Block Billing and Subscription deletion)"
+            echo "Creating SP for RBAC with name $servicePrincipalName, with role $roleName and in scopes /subscriptions/$AZURE_SUBSCRIPTION_ID"
+            az ad sp create-for-rbac --name "$servicePrincipalName" --role "$roleName" --scopes "/subscriptions/$AZURE_SUBSCRIPTION_ID" > "$SP_JSON_FILE"
+        fi
+        if [ -n "${ASSIGN_ROLE_SP}" ] ; then
+            roleName="Custom-Owner (Block Billing and Subscription deletion)"
+            export ASSIGN_ROLE_SP_NAME=$(jq -r .displayName "$SP_JSON_FILE")
+            ASSIGN_ROLE_SP_ID=$(az ad sp list --output=json  --display-name "$ASSIGN_ROLE_SP_NAME" |jq -r '.[0].id')
+            echo "assign ASSIGN_ROLE_SP_NAME=$ASSIGN_ROLE_SP_NAME to scope /subscriptions/$AZURE_SUBSCRIPTION_ID"
+            az role assignment create --assignee  "${ASSIGN_ROLE_SP_ID}" --role "$roleName" --scope "/subscriptions/${AZURE_SUBSCRIPTION_ID}"
+        fi
+        export AZURE_TENANT_ID=$(jq -r .tenant "$SP_JSON_FILE")
+        export AZURE_CLIENT_ID=$(jq -r .appId "$SP_JSON_FILE")
+        export AZURE_CLIENT_SECRET=$(jq -r .password "$SP_JSON_FILE")
     fi
-    if [ -n "${ASSIGN_ROLE_SP}" ] ; then
-        roleName="Custom-Owner (Block Billing and Subscription deletion)"
-        export ASSIGN_ROLE_SP_NAME=$(jq -r .displayName "$SP_JSON_FILE")
-        ASSIGN_ROLE_SP_ID=$(az ad sp list --output=json  --display-name "$ASSIGN_ROLE_SP_NAME" |jq -r '.[0].id')
-        echo "assign ASSIGN_ROLE_SP_NAME=$ASSIGN_ROLE_SP_NAME to scope /subscriptions/$AZURE_SUBSCRIPTION_ID"
-        az role assignment create --assignee  "${ASSIGN_ROLE_SP_ID}" --role "$roleName" --scope "/subscriptions/${AZURE_SUBSCRIPTION_ID}"
-    fi
-    export AZURE_TENANT_ID=$(jq -r .tenant "$SP_JSON_FILE")
-    export AZURE_CLIENT_ID=$(jq -r .appId "$SP_JSON_FILE")
-    export AZURE_CLIENT_SECRET=$(jq -r .password "$SP_JSON_FILE")
 fi
+
 
 OPERATORS_UAMIS_SUFFIX_FILE=operators-uamis-suffix.txt
 if [ ! -f "$OPERATORS_UAMIS_SUFFIX_FILE" ] ; then
@@ -108,7 +128,7 @@ export EA_AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
 export EA_DISABLE='#'
 [ "$USE_EA" = true ] && EA_DISABLE=''
 
-echo ENV=$ENV - AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME} AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}
+echo ENV=$ENV - AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME} AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}, REGION=${REGION}
 echo AZURE_TENANT_ID=${AZURE_TENANT_ID}
 echo AZURE_CLIENT_ID=${AZURE_CLIENT_ID} AZURE_ASO_CLIENT_ID=${AZURE_ASO_CLIENT_ID} 
 mkdir -p "$GEN_OUTPUT"
