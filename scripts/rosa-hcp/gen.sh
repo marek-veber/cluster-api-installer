@@ -7,8 +7,8 @@ else
 fi
 set -e
 
-export DOMAIN_PREFIX=${DOMAIN_PREFIX:-"${USER}"}
-export CLUSTER_NAME=${CLUSTER_NAME:-"rosa-$DOMAIN_PREFIX"}
+export DOMAIN_PREFIX=${DOMAIN_PREFIX:-"${USER:0:4}"} # only 4 chars
+export CLUSTER_NAME=${CLUSTER_NAME:-"rosa-$USER"}
 export ROLE_PREFIX=${ROLE_PREFIX:-"r-$DOMAIN_PREFIX"}
 export NAMESPACE=${NAMESPACE:-"rosa-ns"}
 export OPENSHIFT_VERSION=${OPENSHIFT_VERSION:-"4.20.0"}
