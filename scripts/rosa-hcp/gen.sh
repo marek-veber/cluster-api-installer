@@ -38,6 +38,7 @@ export OCM_CLIENT_SECRET_BASE64=$(echo -n "$OCM_CLIENT_SECRET"|base64)
 # AWS credentials
 [ -n "$AWS_ACCESS_KEY_ID" ] || { echo AWS_ACCESS_KEY_ID should be defined; exit 1; }
 [ -n "$AWS_SECRET_ACCESS_KEY" ] || { echo AWS_SECRET_ACCESS_KEY should be defined; exit 1; }
+# Format credentials in INI format for cluster-scoped secret (CAPA requires this format in capa-system namespace)
 export AWS_CREDENTIALS=$(echo "[default]
 aws_access_key_id = $AWS_ACCESS_KEY_ID
 aws_secret_access_key = $AWS_SECRET_ACCESS_KEY

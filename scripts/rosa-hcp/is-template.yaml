@@ -26,6 +26,3 @@ spec:
   - "${AWS_REGION}b"
   - "${AWS_REGION}c"
   cidrBlock: 10.0.0.0/16
-  identityRef:
-    kind: AWSClusterControllerIdentity
-    name: default
