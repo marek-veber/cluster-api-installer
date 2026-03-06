@@ -35,7 +35,7 @@ spec:
   credentialsSecretRef:
     name: rosa-creds-secret
   rosaClusterName: "${CLUSTER_NAME}"
-  domainPrefix: rosa-hcp
+  domainPrefix: "${DOMAIN_PREFIX}"
   rosaRoleConfigRef:
     name: "${ROLE_CONFIG}"
   version: "${OPENSHIFT_VERSION}"

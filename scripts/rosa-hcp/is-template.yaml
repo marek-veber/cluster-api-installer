@@ -20,7 +20,7 @@ metadata:
   namespace: "${NAMESPACE}"
 spec:
   region: "${AWS_REGION}"
-  stackName: "rosa-hcp-net"
+  stackName: "${DOMAIN_PREFIX}-net"
   availabilityZones:
   - "${AWS_REGION}a"
   - "${AWS_REGION}b"
