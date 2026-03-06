@@ -17,7 +17,9 @@ export ROLE_CONFIG=${ROLE_CONFIG:-"role-config"}
 export ROSA_VPC=${ROSA_VPC:-"rosa-vpc"}
 export ROSA_CREDS_SECRET=${ROSA_CREDS_SECRET:-"rosa-creds-secret"}
 export OPENSHIFT_VERSION=${OPENSHIFT_VERSION:-"4.20.0"}
-export CAPA_NAMESPACE=capa-system
+export CAPA_NAMESPACE=${CAPA_NAMESPACE:-"capa-system"}
+
+echo USER=$USER, DOMAIN_PREFIX=$DOMAIN_PREFIX, CLUSTER_NAME=$CLUSTER_NAME
 
 # credentials
 if [ -s "$JSON_SECRET_FILE" ] ; then
