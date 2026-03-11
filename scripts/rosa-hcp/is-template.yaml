@@ -7,7 +7,6 @@ spec:
   identityRef:
     kind: AWSClusterStaticIdentity
     name: "${CLUSTER_NAME}-account"
-  region: "${AWS_REGION}"
   accountRoleConfig:
     prefix: "${ROLE_PREFIX}"
     version: "${OPENSHIFT_VERSION}"
