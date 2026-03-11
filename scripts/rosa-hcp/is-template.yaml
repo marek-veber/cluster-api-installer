@@ -19,6 +19,9 @@ metadata:
   name: "${ROSA_VPC}"
   namespace: "${NAMESPACE}"
 spec:
+  identityRef:
+    kind: AWSClusterStaticIdentity
+    name: "${CLUSTER_NAME}-account"
   region: "${AWS_REGION}"
   stackName: "${DOMAIN_PREFIX}-net"
   availabilityZones:

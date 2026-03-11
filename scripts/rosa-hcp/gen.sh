@@ -8,6 +8,7 @@ fi
 set -e
 
 export DOMAIN_PREFIX=${DOMAIN_PREFIX:-"${USER:0:4}"} # only 4 chars
+export CLUSTER_NAME=${WORKLOAD_CLUSTER_NAME:-"$CLUSTER_NAME"}
 export CLUSTER_NAME=${CLUSTER_NAME:-"rosa-$USER"}
 export ROLE_PREFIX=${ROLE_PREFIX:-"$DOMAIN_PREFIX"}
 export NAMESPACE=${NAMESPACE:-"rosa-ns"}
