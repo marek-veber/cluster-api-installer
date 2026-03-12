@@ -22,6 +22,8 @@ export ENV=${ENV:-stage}
 KIND_CLUSTER_NAME="${KIND_CLUSTER_NAME:-aso2}"
 export CREATE_CREDENTIALS=true
 export NAMESPACE=${NAMESPACE:-default}
+export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20251223preview}
+# export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20240610preview}
 
 
 if [ "$USE_CI" != "true" ] ; then
@@ -41,6 +43,11 @@ if [ "$USE_CI" != "true" ] ; then
     if [ "$ENV" == stage ] ; then
         export AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME:-"ARO HCP - STAGE testing (EA Subscription)"}
         export REGION=${REGION:-uksouth}
+    fi
+
+    if [ "$ENV" == prod ] ; then
+        export AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME:-"ARO HCP E2E Hosted Clusters (EA Subscription)"}
+        export REGION=${REGION:-switzerlandnorth}
     fi
     
     export AZURE_SUBSCRIPTION_ID=$(az account show --query id --output tsv     --subscription "$AZURE_SUBSCRIPTION_NAME")
@@ -144,7 +151,8 @@ if [ -n "$CREATE_CREDENTIALS" ] ; then
     envsubst  < $TEMPLATE_FILE_CRE > "$GEN_OUTPUT/credentials.yaml"
 fi
 
-TEMPLATE_FILE_ARO=$(dirname $0)/aro-template.yaml
+ARO_TEMPLATE=${ARO_TEMPLATE:-'aro-template.yaml'}
+TEMPLATE_FILE_ARO=$(dirname $0)/${ARO_TEMPLATE}
 TEMPLATE_FILE_IS=$(dirname $0)/is-template.yaml
 
 
