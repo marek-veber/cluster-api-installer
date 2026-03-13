@@ -4,9 +4,12 @@ metadata:
   name: "${ROLE_CONFIG}"
   namespace: "${NAMESPACE}"
 spec:
+  identityRef:
+    kind: AWSClusterStaticIdentity
+    name: "${CLUSTER_NAME}-account"
   accountRoleConfig:
     prefix: "${ROLE_PREFIX}"
-    version: "${OPENSHIFT_VERSION}"  
+    version: "${OPENSHIFT_VERSION}"
   operatorRoleConfig:
     prefix: "${ROLE_PREFIX}"
   credentialsSecretRef:
@@ -19,6 +22,9 @@ metadata:
   name: "${ROSA_VPC}"
   namespace: "${NAMESPACE}"
 spec:
+  identityRef:
+    kind: AWSClusterStaticIdentity
+    name: "${CLUSTER_NAME}-account"
   region: "${AWS_REGION}"
   stackName: "${DOMAIN_PREFIX}-net"
   availabilityZones:

@@ -22,8 +22,8 @@ export ENV=${ENV:-stage}
 KIND_CLUSTER_NAME="${KIND_CLUSTER_NAME:-aso2}"
 export CREATE_CREDENTIALS=true
 export NAMESPACE=${NAMESPACE:-default}
-export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20251223preview}
-# export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20240610preview}
+#export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20251223preview}
+export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20240610preview}
 
 
 if [ "$USE_CI" != "true" ] ; then
@@ -61,6 +61,7 @@ if [ "$USE_CI" != "true" ] ; then
 fi
 
 export USER=${USER:-user1}
+export CS_CLUSTER_NAME=${WORKLOAD_CLUSTER_NAME:-"$CS_CLUSTER_NAME"}
 export CS_CLUSTER_NAME=${CS_CLUSTER_NAME:-$USER-$ENV}
 export NAME_PREFIX=${NAME_PREFIX:-$CS_CLUSTER_NAME}
 export RESOURCEGROUPNAME="$CS_CLUSTER_NAME-resgroup"
