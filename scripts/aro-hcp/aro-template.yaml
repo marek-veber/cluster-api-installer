@@ -164,7 +164,7 @@ spec:
         name: ${CS_CLUSTER_NAME}-mp1
         namespace: ${NAMESPACE}
       spec:
-        azureName: ${CS_CLUSTER_NAME}-mp1
+        azureName: ${NAME_PREFIX}-mp1
         location: ${REGION}
         owner:
           name: ${CS_CLUSTER_NAME}
