@@ -106,7 +106,7 @@ if [ "$USE_CI" != "true" ] ; then
 fi
 
 
-OPERATORS_UAMIS_SUFFIX_FILE=operators-uamis-suffix.txt
+OPERATORS_UAMIS_SUFFIX_FILE="${OPERATORS_UAMIS_SUFFIX_FILE:-operators-uamis-suffix.txt}"
 if [ ! -f "$OPERATORS_UAMIS_SUFFIX_FILE" ] ; then
     openssl rand -hex 3 > "$OPERATORS_UAMIS_SUFFIX_FILE"
 fi
