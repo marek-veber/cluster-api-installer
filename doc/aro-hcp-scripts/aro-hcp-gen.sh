@@ -25,7 +25,7 @@ if [ "$ENV" == int ] ; then
 fi
 
 if [ "$ENV" == stage ] ; then
-    export AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME:-"ARO HCP - STAGE testing (EA Subscription)"}
+    export AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME:-"ARO HCP - Misc Testing (EA Subscription)"}
     export REGION=${REGION:-uksouth}
 fi
 
