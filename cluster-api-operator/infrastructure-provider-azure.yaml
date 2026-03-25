@@ -51,7 +51,7 @@ spec:
     containers:
     - name: manager
       # Use your custom image
-      imageUrl: quay.io/mveber/cluster-api-provider-azure-rhel9:2.17.0-3
+      imageUrl: quay.io/mveber/cluster-api-provider-azure-rhel9:2.17.0-5
       args:
         --azurecluster-concurrency: "20"
         --azuremachine-concurrency: "50"
