@@ -101,10 +101,16 @@ if [ "$DO_DEPLOY" = true ] ; then
                 echo "  WARNING: kubeconfig file not found at $KUBECONFIG_FILE, requestAdminCredential will fail"
             fi
         fi
-        echo "      HELM ARGS: --set Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]}
+        # Pass DEV_ENDPOINT to aro-mockup-proxy chart when set
+        DEV_ENDPOINT_ARG=""
+        if [ "$PROJECT" = "aro-mockup-proxy" -a -n "$DEV_ENDPOINT" ] ; then
+            DEV_ENDPOINT_ARG="--set config.devEndpoint=$DEV_ENDPOINT"
+            echo "  DEV_ENDPOINT: $DEV_ENDPOINT (hcpOpenShiftCluster requests will be forwarded)"
+        fi
+        echo "      HELM ARGS: --set Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG
         HELM_NAME_ARG=""
         [ -n "$HELM_RELEASE_NAME" ] && HELM_NAME_ARG="--name-template=$HELM_RELEASE_NAME"
-        helm template $HELM_NAME_ARG $CHART --include-crds --namespace "$NAMESPACE" --set "Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]}|kubectl $KUBE_CONTEXT -n "$NAMESPACE" apply -f - --server-side --force-conflicts
+        helm template $HELM_NAME_ARG $CHART --include-crds --namespace "$NAMESPACE" --set "Release.Namespace=$NAMESPACE" ${helm_add_args_a[$T]} $DEV_ENDPOINT_ARG|kubectl $KUBE_CONTEXT -n "$NAMESPACE" apply -f - --server-side --force-conflicts
         echo
     done
 fi

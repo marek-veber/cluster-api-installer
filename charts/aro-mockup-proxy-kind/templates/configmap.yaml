@@ -19,6 +19,9 @@ data:
   ASYNC_TIMEOUT: {{ .Values.config.asyncOperationTimeout | quote }}
   POLLING_INTERVAL: {{ .Values.config.pollingInterval | quote }}
   MOCK_PROXY_EXTERNAL_HOST: {{ .Values.config.externalHost | quote }}
+  {{- if .Values.config.devEndpoint }}
+  DEV_ENDPOINT: {{ .Values.config.devEndpoint | quote }}
+  {{- end }}
   {{- if .Values.tls.enabled }}
   TLS_CERT_FILE: "/tls/tls.crt"
   TLS_KEY_FILE: "/tls/tls.key"

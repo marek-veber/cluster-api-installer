@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -48,6 +49,7 @@ type Resource struct {
 type AROHCPMockProxyEnhanced struct {
 	db         *sql.DB
 	azureProxy *httputil.ReverseProxy
+	devProxy   *httputil.ReverseProxy // optional: proxy hcpOpenShiftCluster* to dev environment
 	asyncOps   *AsyncOperationManager
 	config     *Config
 }
@@ -80,9 +82,58 @@ func NewAROHCPMockProxyEnhanced(config *Config) (*AROHCPMockProxyEnhanced, error
 	// Create async operation manager
 	asyncOps := NewAsyncOperationManager(config)
 
+	// Create optional dev environment proxy
+	var devProxy *httputil.ReverseProxy
+	if config.DevEndpoint != "" {
+		devURL, err := url.Parse(config.DevEndpoint)
+		if err != nil {
+			return nil, fmt.Errorf("invalid dev endpoint: %w", err)
+		}
+		devProxy = httputil.NewSingleHostReverseProxy(devURL)
+		originalDevDirector := devProxy.Director
+		devProxy.Director = func(req *http.Request) {
+			// Save the original Host (proxy address) before the director rewrites it.
+			// The frontend uses Referer to build Azure-AsyncOperation/Location URLs
+			// for LRO polling. These must point back to the proxy so ASO can reach them.
+			originalHost := req.Host
+			originalDevDirector(req)
+			req.Host = devURL.Host
+			req.Header.Set("X-Original-Host", originalHost)
+			req.Header.Set("Referer", "https://"+originalHost+req.URL.Path+"?"+req.URL.RawQuery)
+			// Inject ARM headers if missing - the real ARM gateway
+			// adds these headers, but requests via the mockup proxy skip ARM.
+			if req.Header.Get("X-Ms-Arm-Resource-System-Data") == "" {
+				systemData := fmt.Sprintf(`{"createdBy":"mockup-proxy","createdByType":"Application","createdAt":"%s"}`, time.Now().UTC().Format(time.RFC3339))
+				req.Header.Set("X-Ms-Arm-Resource-System-Data", systemData)
+			}
+			if req.Header.Get("X-Ms-Identity-Url") == "" {
+				req.Header.Set("X-Ms-Identity-Url", "https://dummyhost.identity.azure.net")
+			}
+		}
+		// Rewrite Azure-AsyncOperation and Location response headers so LRO
+		// polling URLs point to the proxy, not the real frontend.
+		devProxy.ModifyResponse = func(resp *http.Response) error {
+			for _, header := range []string{"Azure-Asyncoperation", "Location"} {
+				if val := resp.Header.Get(header); val != "" {
+					if u, err := url.Parse(val); err == nil {
+						u.Host = resp.Request.Header.Get("X-Original-Host")
+						u.Scheme = "https"
+						resp.Header.Set(header, u.String())
+					}
+				}
+			}
+			return nil
+		}
+		// Skip TLS verification for dev (port-forwarded) endpoints
+		devProxy.Transport = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+	}
+
 	return &AROHCPMockProxyEnhanced{
 		db:         db,
 		azureProxy: azureProxy,
+		devProxy:   devProxy,
 		asyncOps:   asyncOps,
 		config:     config,
 	}, nil
@@ -103,26 +154,62 @@ func (p *AROHCPMockProxyEnhanced) baseURL(r *http.Request) string {
 	return fmt.Sprintf("%s://%s", scheme, host)
 }
 
+// statusRecorder wraps http.ResponseWriter to capture the status code.
+type statusRecorder struct {
+	http.ResponseWriter
+	status int
+}
+
+func (sr *statusRecorder) WriteHeader(code int) {
+	sr.status = code
+	sr.ResponseWriter.WriteHeader(code)
+}
+
 func (p *AROHCPMockProxyEnhanced) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	rec := &statusRecorder{ResponseWriter: w, status: 200}
 	log.Printf("[%s] %s (Host: %s)", r.Method, r.URL.Path, r.Host)
 
 	// Handle async operation status requests
 	if strings.Contains(r.URL.Path, "/operations/") && !strings.Contains(r.URL.Path, "/providers/") {
 		log.Println("  -> Routing to Async Operation Status")
-		p.asyncOps.ServeHTTP(w, r)
+		p.asyncOps.ServeHTTP(rec, r)
+		log.Printf("  <- %d", rec.status)
 		return
 	}
 
 	// Check if this is an ARO-HCP request
 	if strings.Contains(r.URL.Path, "/Microsoft.RedHatOpenShift/") {
+		// When DevEndpoint is configured, forward hcpOpenShiftCluster requests
+		// to the real ARO HCP frontend (e.g. via oc port-forward)
+		if p.devProxy != nil && isHcpClusterRequest(r.URL.Path) {
+			log.Printf("  -> Routing to Dev ARO-HCP frontend (%s)", p.config.DevEndpoint)
+			p.devProxy.ServeHTTP(rec, r)
+			log.Printf("  <- %d", rec.status)
+			return
+		}
 		log.Println("  -> Routing to ARO-HCP Mock (SQLite)")
-		p.handleAROHCP(w, r)
+		p.handleAROHCP(rec, r)
+		log.Printf("  <- %d", rec.status)
 		return
 	}
 
 	// Forward to real Azure
 	log.Println("  -> Routing to Azure ARM")
-	p.azureProxy.ServeHTTP(w, r)
+	p.azureProxy.ServeHTTP(rec, r)
+	log.Printf("  <- %d", rec.status)
+}
+
+// isHcpClusterRequest returns true for paths that target hcpOpenShiftClusters
+// and their sub-resources (nodePools, externalAuth, actions like
+// requestAdminCredential), as well as hcpOperationStatuses for LRO polling.
+// Location-based read-only resources like hcpOpenShiftVersions and
+// hcpOperatorIdentityRoleSets are NOT matched so they continue to be
+// served by the local mock.
+func isHcpClusterRequest(path string) bool {
+	lower := strings.ToLower(path)
+	return strings.Contains(lower, "/hcpopenshiftclusters") ||
+		strings.Contains(lower, "/hcpoperationstatuses") ||
+		strings.Contains(lower, "/hcpoperationresults")
 }
 
 func (p *AROHCPMockProxyEnhanced) handleResourceGroup(w http.ResponseWriter, r *http.Request) {
@@ -1195,7 +1282,12 @@ func main() {
 	log.Printf("  Failure Simulation: %v (rate: %.1f%%)", config.SimulateFailures, config.FailureRate*100)
 	log.Printf("")
 	log.Printf("Routing:")
-	log.Printf("  ARO-HCP requests -> SQLite Mock")
+	if config.DevEndpoint != "" {
+		log.Printf("  hcpOpenShiftCluster requests -> Dev frontend %s", config.DevEndpoint)
+		log.Printf("  Other ARO-HCP requests -> SQLite Mock")
+	} else {
+		log.Printf("  ARO-HCP requests -> SQLite Mock")
+	}
 	log.Printf("  Other requests -> %s", config.AzureEndpoint)
 	log.Printf("")
 

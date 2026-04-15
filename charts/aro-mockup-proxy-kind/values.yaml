@@ -69,6 +69,13 @@ config:
   asyncOperationTimeout: "5m"
   pollingInterval: "5s"
   externalHost: "aro-mockup-proxy.capz-system.svc.cluster.local:8443"
+  # When set, hcpOpenShiftCluster requests are forwarded to this endpoint
+  # instead of being handled by the local SQLite mock.
+  # Use with port-forwarding to the dev ARO-HCP frontend:
+  #   KUBECONFIG=<aks-kubeconfig> oc port-forward --address 0.0.0.0 -n aro-hcp svc/aro-hcp-frontend 9443:8443
+  # Then set devEndpoint to the host IP reachable from inside kind:
+  #   devEndpoint: "https://172.17.0.1:9443"
+  devEndpoint: ""
 
 # Workload kubeconfig for requestAdminCredential endpoint
 kubeconfig:

@@ -19,7 +19,6 @@ fi
 
 export ENV=${ENV:-${DEPLOYMENT_ENV}}
 export ENV=${ENV:-stage}
-KIND_CLUSTER_NAME="${KIND_CLUSTER_NAME:-aso2}"
 export CREATE_CREDENTIALS=true
 export NAMESPACE=${NAMESPACE:-default}
 export ARO_HCP_VERSION=${ARO_HCP_VERSION:-v1api20251223preview}
@@ -35,6 +34,11 @@ if [ "$USE_CI" != "true" ] ; then
     fi
     
     
+    if [ "$ENV" == devel ] ; then
+        export AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME:-"ARO Hosted Control Planes (EA Subscription 1)"}
+        export REGION=${REGION:-uksouth}
+    fi
+
     if [ "$ENV" == int ] ; then
         export AZURE_SUBSCRIPTION_NAME=${AZURE_SUBSCRIPTION_NAME:-"ARO SRE Team - INT (EA Subscription 3)"}
         export REGION=${REGION:-uksouth}
@@ -66,7 +70,7 @@ export CS_CLUSTER_NAME=${CS_CLUSTER_NAME:-$USER-$ENV}
 export NAME_PREFIX=${NAME_PREFIX:-$CS_CLUSTER_NAME}
 export RESOURCEGROUPNAME="$CS_CLUSTER_NAME-resgroup"
 export OCP_VERSION=${OCP_VERSION:-4.20}
-export OCP_VERSION_MP=${OCP_VERSION_MP:-$OCP_VERSION.0}
+export OCP_VERSION_MP=${OCP_VERSION_MP:-$OCP_VERSION.8}
 export REGION=${REGION:-westus3}
 export NODEPOOL_PREFIX="w-${REGION:0:7}"
 

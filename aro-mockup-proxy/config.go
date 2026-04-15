@@ -31,6 +31,12 @@ type Config struct {
 	// Async operation configuration
 	AsyncOperationTimeout time.Duration
 	PollingInterval       time.Duration
+
+	// Dev environment proxy: when set, hcpOpenShiftCluster requests are
+	// forwarded to this endpoint (e.g. "https://localhost:8443" via
+	// oc port-forward -n aro-hcp svc/aro-hcp-frontend 8443:8443)
+	// instead of being handled by the local SQLite mock.
+	DevEndpoint string
 }
 
 // LoadConfig loads configuration from environment variables
@@ -52,6 +58,7 @@ func LoadConfig() *Config {
 		FailureRate:              getEnvFloat("FAILURE_RATE", 0.0),
 		AsyncOperationTimeout:    getEnvDuration("ASYNC_TIMEOUT", 5*time.Minute),
 		PollingInterval:          getEnvDuration("POLLING_INTERVAL", 5*time.Second),
+		DevEndpoint:              getEnv("DEV_ENDPOINT", ""),
 	}
 }
 
